@@ -40,6 +40,8 @@ Create a runner script, e. g. `run.php`:
 ```php
 <?php
 
+require __DIR__ . '/vendor/autoload.php';
+
 use Conia\Cli\{Runner, Commands};
 use MyCommand;
 
