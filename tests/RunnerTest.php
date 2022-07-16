@@ -39,3 +39,10 @@ test('Run ambiguous command', function () {
     $runner = $this->getRunner();
     $runner->run();
 })->expectOutputRegex('/Ambiguous.*bar:stuff.*foo:stuff/s');
+
+
+test('Run group:name command', function () {
+    $_SERVER['argv'] = ['run', 'bar:stuff'];
+    $runner = $this->getRunner();
+    $runner->run();
+})->expectOutputString("Bar's stuff");

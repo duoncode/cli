@@ -28,9 +28,9 @@ class Runner
         $groups = [];
 
         foreach ($commands->get() as $command) {
-            $name = $command->name();
+            $name = strtolower($command->name());
             $desc = $command->description();
-            $groups[$command->group() ?: 'General'][$name] = [
+            $groups[strtolower($command->group()) ?: 'General'][$name] = [
                 'command' => $command,
                 'description' => $desc,
             ];
@@ -54,7 +54,8 @@ class Runner
         echo "\nAvailable commands:\n";
 
         foreach ($this->toc as $group => $subCommands) {
-            $this->output->echo("\n$group\n");
+            $g = ucwords($group);
+            $this->output->echo("\n$g\n");
 
             foreach ($subCommands as $name => $command) {
                 $desc = $command['description'];
@@ -68,11 +69,23 @@ class Runner
         return $cmd->output($this->output)->run();
     }
 
+    protected function showAmbiguousMessage(string $cmd)
+    {
+        $this->output->echo("Ambiguous command. Please add the group name:\n");
+        asort($this->list[$cmd]);
+
+        foreach ($this->list[$cmd] as $command) {
+            $group = strtolower($command->group());
+            $name = strtolower($command->name());
+            $this->output->echo("    $group:$name\n");
+        }
+    }
+
     public function run(): string|int
     {
         try {
             if (isset($_SERVER['argv'][1])) {
-                $cmd = $_SERVER['argv'][1];
+                $cmd = strtolower($_SERVER['argv'][1]);
 
                 if ($cmd === 'help') {
                     $this->showHelp();
@@ -84,16 +97,17 @@ class Runner
                             return $this->runCommand($this->list[$cmd][0]);
                         }
 
-                        echo "Ambiguous command. Please add the group name:\n";
-                        asort($this->list[$cmd]);
-
-                        foreach ($this->list[$cmd] as $command) {
-                            $group = strtolower($command->group());
-                            $name = strtolower($command->name());
-                            echo "    $group:$name\n";
-                        }
+                        $this->showAmbiguousMessage($cmd);
 
                         return 1;
+                    } else {
+                        if (str_contains($cmd, ':')) {
+                            [$group, $name] = explode(':', $cmd);
+
+                            if (isset($this->toc[$group][$name])) {
+                                return $this->runCommand($this->toc[$group][$name]['command']);
+                            }
+                        }
                     }
 
                     echo "\nCommand not found.\n";
