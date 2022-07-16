@@ -10,7 +10,7 @@ use Exception;
 class Erring extends Command
 {
     protected string $name = 'err';
-    protected string $section = 'Errors';
+    protected string $group = 'Errors';
     protected string $description = "Throws an error";
 
     public function run(): int

@@ -9,7 +9,7 @@ use Conia\Cli\Command;
 class FooStuff extends Command
 {
     protected string $name = 'stuff';
-    protected string $section = 'Foo';
+    protected string $group = 'Foo';
     protected string $description = "Prints Foo's stuff to stdout";
 
     public function run(): int

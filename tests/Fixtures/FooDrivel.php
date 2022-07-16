@@ -9,7 +9,7 @@ use Conia\Cli\Command;
 class FooDrivel extends Command
 {
     protected string $name = 'drivel';
-    protected string $section = 'Foo';
+    protected string $group = 'Foo';
     protected string $description = "Prints Foo's drivel to stdout";
 
     public function run(): int

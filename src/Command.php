@@ -8,7 +8,7 @@ namespace Conia\Cli;
 abstract class Command
 {
     protected string $name = '';
-    protected string $section = '';
+    protected string $group = '';
     protected string $description = '';
     protected Output $output;
 
@@ -19,9 +19,9 @@ abstract class Command
         return $this->name;
     }
 
-    public function section(): string
+    public function group(): string
     {
-        return $this->section;
+        return $this->group;
     }
 
     public function description(): string
