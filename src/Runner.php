@@ -72,11 +72,11 @@ class Runner
 
     protected function showAmbiguousMessage(string $cmd): void
     {
-        $this->output->echo("Ambiguous command. Please add the group name:\n");
+        $this->output->echo("Ambiguous command. Please add the group name:\n\n");
         asort($this->list[$cmd]);
 
         foreach ($this->list[$cmd] as $command) {
-            $group = strtolower($command->group());
+            $group = $this->output->color(strtolower($command->group()), 'yellow');
             $name = strtolower($command->name());
             $this->output->echo("  $group:$name\n");
         }

@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 use Conia\Cli\Output;
 
-
 test('Foreground colors', function () {
     $output = new Output('php://output');
 
