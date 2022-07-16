@@ -12,10 +12,10 @@ class BarStuff extends Command
     protected string $group = 'Bar';
     protected string $description = "Prints Bar's stuff to stdout";
 
-    public function run(): int
+    public function run(): string
     {
         $this->echo("Bar's stuff");
 
-        return 0;
+        return 'done';
     }
 }
