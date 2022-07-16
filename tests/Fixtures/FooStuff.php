@@ -18,4 +18,9 @@ class FooStuff extends Command
 
         return 0;
     }
+
+    public function help(): void
+    {
+        $this->echo('foo:stuff help');
+    }
 }

@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Conia\Cli;
 
+use BadMethodCallException;
+
 abstract class Command
 {
     protected string $name = '';
@@ -38,5 +40,10 @@ abstract class Command
     public function echo(string $message): void
     {
         $this->output->echo($message);
+    }
+
+    public function help(): void
+    {
+        throw new BadMethodCallException();
     }
 }

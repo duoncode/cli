@@ -4,10 +4,15 @@ declare(strict_types=1);
 
 namespace Conia\Cli;
 
+use BadMethodCallException;
 use Throwable;
+use ValueError;
 
 class Runner
 {
+    protected const AMBIGUOUS = 1;
+    protected const NOTFOUND = 2;
+
     // The commands ordered by group and name
     protected array $toc = [];
     // The commands indexed by name only
@@ -49,7 +54,7 @@ class Runner
         }
     }
 
-    public function showHelp(): void
+    public function showHelp(): int
     {
         $this->output->echo("Available commands:\n");
 
@@ -63,14 +68,11 @@ class Runner
                 $this->output->echo("  $name $desc\n");
             }
         }
+
+        return 0;
     }
 
-    protected function runCommand(Command $cmd): string|int
-    {
-        return $cmd->output($this->output)->run();
-    }
-
-    protected function showAmbiguousMessage(string $cmd): void
+    protected function showAmbiguousMessage(string $cmd): int
     {
         $this->output->echo("Ambiguous command. Please add the group name:\n\n");
         asort($this->list[$cmd]);
@@ -80,45 +82,74 @@ class Runner
             $name = strtolower($command->name());
             $this->output->echo("  $group:$name\n");
         }
+
+        return 1;
     }
 
-    public function run(): string|int
+    protected function getCommand(string $cmd): Command
+    {
+        if (isset($this->list[$cmd])) {
+            if (count($this->list[$cmd]) === 1) {
+                return  $this->list[$cmd][0];
+            } else {
+                throw new ValueError('Ambiguous command', self::AMBIGUOUS);
+            }
+        } else {
+            if (str_contains($cmd, ':')) {
+                [$group, $name] = explode(':', $cmd);
+
+                if (isset($this->toc[$group][$name])) {
+                    return $this->toc[$group][$name]['command'];
+                }
+            }
+        }
+
+        throw new ValueError('Command not found', self::NOTFOUND);
+    }
+
+    protected function runCommand(Command $command, bool $isHelpCall): int|string
+    {
+        if ($isHelpCall) {
+            $command->output($this->output)->help();
+
+            return 0;
+        }
+
+        return $command->output($this->output)->run();
+    }
+
+    public function run(): int|string
     {
         try {
             if (isset($_SERVER['argv'][1])) {
                 $cmd = strtolower($_SERVER['argv'][1]);
+                $isHelpCall = false;
 
                 if ($cmd === 'help') {
-                    $this->showHelp();
+                    $isHelpCall = true;
 
-                    return 0;
-                } else {
-                    if (isset($this->list[$cmd])) {
-                        if (count($this->list[$cmd]) === 1) {
-                            return $this->runCommand($this->list[$cmd][0]);
-                        }
-
-                        $this->showAmbiguousMessage($cmd);
-
-                        return 1;
+                    if (isset($_SERVER['argv'][2])) {
+                        $cmd = strtolower($_SERVER['argv'][2]);
                     } else {
-                        if (str_contains($cmd, ':')) {
-                            [$group, $name] = explode(':', $cmd);
-
-                            if (isset($this->toc[$group][$name])) {
-                                return $this->runCommand($this->toc[$group][$name]['command']);
-                            }
-                        }
+                        return $this->showHelp();
                     }
-
-                    echo "\nCommand not found.\n";
-
-                    return 1;
                 }
-            } else {
-                $this->showHelp();
 
-                return 0;
+                try {
+                    return $this->runCommand($this->getCommand($cmd), $isHelpCall);
+                } catch (ValueError $e) {
+                    if ($e->getCode() === self::AMBIGUOUS) {
+                        return $this->showAmbiguousMessage($cmd);
+                    }
+                } catch (BadMethodCallException) {
+                    echo "No help entry for $cmd\n";
+                }
+
+                echo "Command not found.\n";
+
+                return 1;
+            } else {
+                return $this->showHelp();
             }
         } catch (Throwable $e) {
             $this->output->echo("\nError while running command '");
