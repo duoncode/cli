@@ -51,15 +51,16 @@ class Runner
 
     public function showHelp(): void
     {
-        echo "\nAvailable commands:\n";
+        $this->output->echo("Available commands:\n");
 
         foreach ($this->toc as $group => $subCommands) {
-            $g = ucwords($group);
+            $g = $this->output->color(ucwords($group), 'yellow');
             $this->output->echo("\n$g\n");
 
             foreach ($subCommands as $name => $command) {
                 $desc = $command['description'];
-                $this->output->echo("    $name $desc\n");
+                $name = $this->output->color($name, 'lightgreen');
+                $this->output->echo("  $name $desc\n");
             }
         }
     }
@@ -77,7 +78,7 @@ class Runner
         foreach ($this->list[$cmd] as $command) {
             $group = strtolower($command->group());
             $name = strtolower($command->name());
-            $this->output->echo("    $group:$name\n");
+            $this->output->echo("  $group:$name\n");
         }
     }
 
