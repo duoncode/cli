@@ -1,8 +1,12 @@
 Conia Cli
 =========
 
-A command line interface helper line [Laravel's Artisan](https://laravel.com/docs/9.x/artisan) 
+A command line interface helper like [Laravel's Artisan](https://laravel.com/docs/9.x/artisan) 
 with way less magic.
+
+## Installation
+
+    composer require conia/cli
 
 ## Quick Start
 
