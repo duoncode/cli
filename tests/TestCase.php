@@ -10,25 +10,13 @@ use PHPUnit\Framework\TestCase as BaseTestCase;
 
 class TestCase extends BaseTestCase
 {
-    public function fulltrim(string $text): string
-    {
-        return trim(
-            preg_replace(
-                '/> </',
-                '><',
-                preg_replace(
-                    '/\s+/',
-                    ' ',
-                    preg_replace('/\n/', '', $text)
-                )
-            )
-        );
-    }
-
     public function getCommands(): Commands
     {
         return new Commands([
-            new Fixtures\Write(),
+            new Fixtures\FooStuff(),
+            new Fixtures\BarStuff(),
+            new Fixtures\FooDrivel(),
+            new Fixtures\Erring(),
         ]);
     }
 
