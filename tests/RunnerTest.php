@@ -2,77 +2,20 @@
 
 declare(strict_types=1);
 
-use Conia\Cli\Runner;
+use Conia\Cli\Tests\TestCase;
 
-
-afterEach(function () {
-    // Each Runner::run call registers a error handler
-    restore_error_handler();
-    restore_exception_handler();
-});
+uses(TestCase::class);
 
 
 test('Show help when called without command', function () {
     $_SERVER['argv'] = ['run'];
-
-    ob_start();
-    $result = Runner::run($this->app());
-    $content = ob_get_contents();
-    ob_end_clean();
-
-    expect($result)->toBe(0);
-    expect($content)->toContain('Available commands');
-});
+    $runner = $this->getRunner();
+    $runner->run();
+})->expectOutputRegex('/available commands.*output.*prints stuff/si');
 
 
-test('List commands', function () {
-    $_SERVER['argv'] = ['run', 'commands'];
-
-    ob_start();
-    $result = Runner::run($this->app());
-    $content = ob_get_contents();
-    ob_end_clean();
-
-    expect($result)->toBe(0);
-    expect($content)->toBe("server\n");
-});
-
-
-test('Command not found', function () {
-    $_SERVER['argv'] = ['run', 'unknown-command'];
-
-    ob_start();
-    $result = Runner::run($this->app());
-    $content = ob_get_contents();
-    ob_end_clean();
-
-    expect($result)->toBe(1);
-    expect($content)->toContain('Command not found');
-});
-
-
-test('Pass additional dir', function () {
-    $_SERVER['argv'] = ['run', 'commands'];
-
-    ob_start();
-    $result = Runner::run($this->app(), [C::root() . C::DS . 'scripts']);
-    $content = ob_get_contents();
-    ob_end_clean();
-
-    expect($result)->toBe(0);
-    expect($content)->toContain('error-script');
-});
-
-
-test('Handle script error', function () {
-    $_SERVER['argv'] = ['run', 'error-script'];
-
-    ob_start();
-    $result = Runner::run($this->app(), [C::root() . C::DS . 'scripts']);
-    $content = ob_get_contents();
-    ob_end_clean();
-
-    expect($result)->toBe(1);
-    expect($content)->toContain('error-script');
-    expect($content)->toContain('script error');
-});
+test('Show help when called with help command', function () {
+    $_SERVER['argv'] = ['run', 'help'];
+    $runner = $this->getRunner();
+    $runner->run();
+})->expectOutputRegex('/available commands.*output.*prints stuff/si');
