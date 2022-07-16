@@ -26,14 +26,13 @@
         }
     },
     "require": {
-        "php": ">=8.1",
-        "symfony/html-sanitizer": "^6.1"
+        "php": ">=8.1"
     },
     "require-dev": {
-        "pestphp/pest": "^1.21",
-        "vimeo/psalm": "^4.24",
-        "dealerdirect/phpcodesniffer-composer-installer": "^0.7.2",
-        "staabm/annotate-pull-request-from-checkstyle": "^1.8"
+        "pestphp/pest": "^1",
+        "vimeo/psalm": "^4",
+        "dealerdirect/phpcodesniffer-composer-installer": "^0.7",
+        "staabm/annotate-pull-request-from-checkstyle": "^1"
     },
     "config": {
         "allow-plugins": {
