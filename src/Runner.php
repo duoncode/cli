@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Conia\Cli;
 
-use ErrorException;
+use Throwable;
 
 class Runner
 {
@@ -119,11 +119,10 @@ class Runner
 
                 return 0;
             }
-        } catch (ErrorException $e) {
-            throw $e;
-            echo "\nError while running command '";
-            echo (string)($_SERVER['argv'][1] ?? '<no command given>');
-            echo "'.\n\n    Error message: " . $e->getMessage() . "\n";
+        } catch (Throwable $e) {
+            $this->output->echo("\nError while running command '");
+            $this->output->echo((string)($_SERVER['argv'][1] ?? '<no command given>'));
+            $this->output->echo("'.\n\n    Error message: " . $e->getMessage() . "\n");
 
             return 1;
         }

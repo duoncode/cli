@@ -46,3 +46,24 @@ test('Run group:name command', function () {
     $runner = $this->getRunner();
     $runner->run();
 })->expectOutputString("Bar's stuff");
+
+
+test('Run unknown command', function () {
+    $_SERVER['argv'] = ['run', 'unknown'];
+    $runner = $this->getRunner();
+    $runner->run();
+})->expectOutputRegex('/Command not found/');
+
+
+test('Run unknown group:command', function () {
+    $_SERVER['argv'] = ['run', 'foo:unknown'];
+    $runner = $this->getRunner();
+    $runner->run();
+})->expectOutputRegex('/Command not found/');
+
+
+test('Run failing command', function () {
+    $_SERVER['argv'] = ['run', 'err'];
+    $runner = $this->getRunner();
+    $runner->run();
+})->expectOutputRegex("/Error while.*'err'.*Red herring/s");

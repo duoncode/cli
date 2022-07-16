@@ -15,6 +15,6 @@ class Erring extends Command
 
     public function run(): int
     {
-        throw new Exception();
+        throw new Exception('Red herring');
     }
 }
