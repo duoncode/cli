@@ -9,9 +9,9 @@ use Throwable;
 class Runner
 {
     // The commands ordered by group and name
-    protected array $toc;
+    protected array $toc = [];
     // The commands indexed by name only
-    protected array $list;
+    protected array $list = [];
     protected Output $output;
     protected int $longestName = 0;
 
@@ -69,7 +69,7 @@ class Runner
         return $cmd->output($this->output)->run();
     }
 
-    protected function showAmbiguousMessage(string $cmd)
+    protected function showAmbiguousMessage(string $cmd): void
     {
         $this->output->echo("Ambiguous command. Please add the group name:\n");
         asort($this->list[$cmd]);

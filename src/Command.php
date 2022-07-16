@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Conia\Cli;
 
-
 abstract class Command
 {
     protected string $name = '';
