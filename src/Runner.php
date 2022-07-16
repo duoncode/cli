@@ -8,7 +8,7 @@ use ErrorException;
 
 class Runner
 {
-    // The commands ordered by section and name
+    // The commands ordered by group and name
     protected array $toc;
     // The commands indexed by name only
     protected array $list;
@@ -25,12 +25,12 @@ class Runner
 
     public function orderCommands(Commands $commands): void
     {
-        $sections = [];
+        $groups = [];
 
         foreach ($commands->get() as $command) {
             $name = $command->name();
             $desc = $command->description();
-            $sections[$command->section() ?: 'General'][$name] = [
+            $groups[$command->group() ?: 'General'][$name] = [
                 'command' => $command,
                 'description' => $desc,
             ];
@@ -41,11 +41,11 @@ class Runner
             $this->longestName = $len > $this->longestName ? $len : $this->longestName;
         }
 
-        ksort($sections);
+        ksort($groups);
 
-        foreach ($sections as $section => $commands) {
+        foreach ($groups as $group => $commands) {
             ksort($commands);
-            $this->toc[$section] = $commands;
+            $this->toc[$group] = $commands;
         }
     }
 
@@ -53,8 +53,8 @@ class Runner
     {
         echo "\nAvailable commands:\n";
 
-        foreach ($this->toc as $section => $subCommands) {
-            $this->output->echo("\n$section\n");
+        foreach ($this->toc as $group => $subCommands) {
+            $this->output->echo("\n$group\n");
 
             foreach ($subCommands as $name => $command) {
                 $desc = $command['description'];
@@ -83,8 +83,21 @@ class Runner
                         if (count($this->list[$cmd]) === 1) {
                             return $this->runCommand($this->list[$cmd][0]);
                         }
+
+                        echo "Ambiguous command. Please add the group name:\n";
+                        asort($this->list[$cmd]);
+
+                        foreach ($this->list[$cmd] as $command) {
+                            $group = strtolower($command->group());
+                            $name = strtolower($command->name());
+                            echo "    $group:$name\n";
+                        }
+
+                        return 1;
                     }
+
                     echo "\nCommand not found.\n";
+
                     return 1;
                 }
             } else {

@@ -25,3 +25,17 @@ test('Show help in order', function () {
     $runner = $this->getRunner();
     $runner->run();
 })->expectOutputRegex('/Available.*Bar.*stuff.*Errors.*err.*Foo.*drivel.*stuff/s');
+
+
+test('Run simple command', function () {
+    $_SERVER['argv'] = ['run', 'drivel'];
+    $runner = $this->getRunner();
+    $runner->run();
+})->expectOutputString("Foo's drivel");
+
+
+test('Run ambiguous command', function () {
+    $_SERVER['argv'] = ['run', 'stuff'];
+    $runner = $this->getRunner();
+    $runner->run();
+})->expectOutputRegex('/Ambiguous.*bar:stuff.*foo:stuff/s');
