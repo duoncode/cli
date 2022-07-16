@@ -62,7 +62,7 @@ class Output
         fflush($this->stream);
     }
 
-    public function fg(string $text, string $color, string $background = null): string
+    public function color(string $text, string $color, string $background = null): string
     {
         [$first, $second] = $this->fg[$color];
 
