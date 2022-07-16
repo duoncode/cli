@@ -30,7 +30,7 @@ jobs:
       - name: Run PHP Code Sniffer
         run: ./vendor/bin/phpcs -q --report=checkstyle src tests | ./vendor/bin/cs2pr
 
-  deploy:
+  docs:
     needs: test
     runs-on: ubuntu-latest
     steps:
