@@ -5,87 +5,95 @@ declare(strict_types=1);
 namespace Conia\Cli;
 
 use ErrorException;
-use Conia\Chuck\App;
 
 class Runner
 {
-    public static function getScripts(array $scriptDirs): array
-    {
-        $scripts = [];
+    // The commands ordered by section and name
+    protected array $toc;
+    // The commands indexed by name only
+    protected array $list;
+    protected Output $output;
+    protected int $longestName = 0;
 
-        foreach ($scriptDirs as $scriptDir) {
-            $scripts = array_merge(
-                $scripts,
-                array_filter(glob($scriptDir . DIRECTORY_SEPARATOR . '*.php'), 'is_file')
-            );
+    public function __construct(
+        Commands $commands,
+        string $output = 'php://output'
+    ) {
+        $this->output = new Output($output);
+        $this->orderCommands($commands);
+    }
+
+    public function orderCommands(Commands $commands): void
+    {
+        $sections = [];
+
+        foreach ($commands->get() as $command) {
+            $name = $command->name();
+            $desc = $command->description();
+            $sections[$command->section() ?: 'General'][$name] = [
+                'command' => $command,
+                'description' => $desc,
+            ];
+
+            $this->list[$name][] = $command;
+
+            $len = strlen($command->name());
+            $this->longestName = $len > $this->longestName ? $len : $this->longestName;
         }
 
-        $list = array_unique(
-            array_map(
-                function ($script) {
-                    return basename($script, '.php');
-                },
-                $scripts
-            )
-        );
+        ksort($sections);
 
-        asort($list);
-
-        return $list;
-    }
-
-    public static function showHelp(array $scriptDirs): void
-    {
-        echo "\nAvailable commands:\n\n";
-
-        foreach (self::getScripts($scriptDirs) as $script) {
-            echo "  $script\n";
+        foreach ($sections as $section => $commands) {
+            ksort($commands);
+            $this->toc[$section] = $commands;
         }
     }
 
-    public static function showCommands(array $scriptDirs): void
+    public function showHelp(): void
     {
-        foreach (self::getScripts($scriptDirs) as $script) {
-            echo "$script\n";
+        echo "\nAvailable commands:\n";
+
+        foreach ($this->toc as $section => $subCommands) {
+            $this->output->echo("\n$section\n");
+
+            foreach ($subCommands as $name => $command) {
+                $desc = $command['description'];
+                $this->output->echo("    $name $desc\n");
+            }
         }
     }
 
-    protected static function runCommand(App $app, CommandInterface $cmd): string|int
+    protected function runCommand(Command $cmd): string|int
     {
-        return $cmd->run($app);
+        return $cmd->output($this->output)->run();
     }
 
-    public static function run(App $app, array $scriptDirs = []): string|int
+    public function run(): string|int
     {
         try {
-            $config = $app->config();
-
-            // add the custom script dir first to allow
-            // overriding of builtin scripts.
-            $scriptDirs = array_merge($scriptDirs, $config->scripts()->get());
-
             if (isset($_SERVER['argv'][1])) {
-                $script = $_SERVER['argv'][1] . '.php';
+                $cmd = $_SERVER['argv'][1];
 
-                if ($_SERVER['argv'][1] === 'commands') {
-                    self::showCommands($scriptDirs);
+                if ($cmd === 'help') {
+                    $this->showHelp();
+
                     return 0;
                 } else {
-                    foreach ($scriptDirs as $scriptDir) {
-                        $file = $scriptDir . DIRECTORY_SEPARATOR . $script;
-
-                        if (is_file($file)) {
-                            return self::runCommand($app, require $file);
+                    if (isset($this->list[$cmd])) {
+                        if (count($this->list[$cmd]) === 1) {
+                            return $this->runCommand($this->list[$cmd][0]);
                         }
                     }
                     echo "\nCommand not found.\n";
                     return 1;
                 }
             } else {
-                self::showHelp($scriptDirs);
+                $this->showHelp();
+
                 return 0;
             }
         } catch (ErrorException $e) {
+            throw $e;
             echo "\nError while running command '";
             echo (string)($_SERVER['argv'][1] ?? '<no command given>');
             echo "'.\n\n    Error message: " . $e->getMessage() . "\n";

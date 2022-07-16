@@ -4,41 +4,33 @@ declare(strict_types=1);
 
 namespace Conia\Cli;
 
-use Conia\Chuck\Util\Path as PathUtil;
-use ValueError;
-
-class Scripts
+class Commands
 {
-    protected array $dirs;
+    protected array $commands = [];
 
-    public function __construct()
+    public function __construct(Command|array $commands = [])
     {
-        $ds = DIRECTORY_SEPARATOR;
-        $this->dirs = [realpath(__DIR__ . $ds . '..' . $ds . '..' . $ds . 'bin')];
+        $this->add($commands);
     }
 
-    protected function preparePath(string $path): string
+    protected function addCommand(Command $command): void
     {
-        $result = PathUtil::realpath($path);
-
-        if (!PathUtil::isAbsolute($result)) {
-            $result = realpath($result);
-        }
-
-        if ($result) {
-            return $result;
-        }
-
-        throw new ValueError("Path does not exist: $path");
+        $this->commands[] = $command;
     }
 
-    public function add(string $path): void
+    public function add(Command|array $commands): void
     {
-        array_unshift($this->dirs, $this->preparePath($path));
+        if (is_array($commands)) {
+            foreach ($commands as $command) {
+                $this->add($command);
+            }
+        } else {
+            $this->addCommand($commands);
+        }
     }
 
     public function get(): array
     {
-        return $this->dirs;
+        return $this->commands;
     }
 }
