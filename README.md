@@ -11,4 +11,3 @@ with way less magic.
 ## Quick Start
 
 See documentation at [conia.dev/cli](https://conia.dev/cli)
-

@@ -11,7 +11,7 @@ abstract class Command
     protected string $name = '';
     protected string $group = '';
     protected string $description = '';
-    protected Output $output;
+    protected ?Output $output = null;
 
     abstract public function run(): string|int;
 
@@ -39,7 +39,9 @@ abstract class Command
 
     public function echo(string $message): void
     {
-        $this->output->echo($message);
+        if (isset($this->output)) {
+            $this->output->echo($message);
+        }
     }
 
     public function help(): void
