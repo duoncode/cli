@@ -38,7 +38,7 @@ test('Show help in order', function () {
     $_SERVER['argv'] = ['run'];
     $runner = $this->getRunner();
     $runner->run();
-})->expectOutputRegex('/Available.*Bar.*stuff.*Errors.*err.*Foo.*drivel.*stuff/s');
+})->expectOutputRegex('/Available.*Bar.*bar:.*stuff.*Errors.*err:.*err.*Foo.*foo:.*drivel.*stuff/s');
 
 
 test('Run simple command', function () {
@@ -81,3 +81,10 @@ test('Run failing command', function () {
     $runner = $this->getRunner();
     $runner->run();
 })->expectOutputRegex("/Error while.*'err'.*Red herring/s");
+
+
+test('Run failing command with custom prefix', function () {
+    $_SERVER['argv'] = ['run', 'err:err'];
+    $runner = $this->getRunner();
+    $runner->run();
+})->expectOutputRegex("/Error while.*'err:err'.*Red herring/s");

@@ -34,11 +34,19 @@ class Runner
 
         foreach ($commands->get() as $command) {
             $name = strtolower($command->name());
-            $desc = $command->description();
-            $groups[strtolower($command->group()) ?: 'General'][$name] = [
-                'command' => $command,
-                'description' => $desc,
-            ];
+            $prefix = $command->prefix();
+
+            if (array_key_exists($prefix, $groups)) {
+                $groups[$prefix]['commands'][$name] = $command;
+            } else {
+                $group = $command->group() ?: 'General';
+                $groups[$prefix] = [
+                    'title' => empty($prefix) ?
+                        'General' :
+                        $group . ' ' . $this->output->color('(' . $prefix . ')', 'gray'),
+                    'commands' => [$name => $command],
+                ];
+            }
 
             $this->list[$name][] = $command;
 
@@ -48,24 +56,31 @@ class Runner
 
         ksort($groups);
 
-        foreach ($groups as $group => $commands) {
+        foreach ($groups as $name => $group) {
+            $commands = $group['commands'];
             ksort($commands);
-            $this->toc[$group] = $commands;
+            $group['commands'] = $commands;
+            $this->toc[$name] = $group;
         }
     }
 
     public function showHelp(): int
     {
+        $script = $_SERVER['argv'][0];
+        $this->output->echo("Usage: php $script [prefix:]command [arguments]\n\n");
+        $this->output->echo("Prefixes are optional if the command is unambiguous.\n\n");
         $this->output->echo("Available commands:\n");
 
-        foreach ($this->toc as $group => $subCommands) {
-            $g = $this->output->color(ucwords($group), 'yellow');
+        foreach ($this->toc as $group) {
+            $g = $this->output->color(ucwords($group['title']), 'yellow');
             $this->output->echo("\n$g\n");
 
-            foreach ($subCommands as $name => $command) {
-                $desc = $command['description'];
+            foreach ($group['commands'] as $name => $command) {
+                $desc = $command->description();
+                $p = $command->prefix();
+                $prefix = $p ? $p . ':' : '';
                 $name = $this->output->color($name, 'lightgreen');
-                $this->output->echo("  $name $desc\n");
+                $this->output->echo("  ${prefix}$name $desc\n");
             }
         }
 
@@ -78,9 +93,9 @@ class Runner
         asort($this->list[$cmd]);
 
         foreach ($this->list[$cmd] as $command) {
-            $group = $this->output->color(strtolower($command->group()), 'yellow');
+            $prefix = $this->output->color($command->prefix(), 'yellow');
             $name = strtolower($command->name());
-            $this->output->echo("  $group:$name\n");
+            $this->output->echo("  $prefix:$name\n");
         }
 
         return 1;
@@ -98,8 +113,8 @@ class Runner
             if (str_contains($cmd, ':')) {
                 [$group, $name] = explode(':', $cmd);
 
-                if (isset($this->toc[$group][$name])) {
-                    return $this->toc[$group][$name]['command'];
+                if (isset($this->toc[$group]['commands'][$name])) {
+                    return $this->toc[$group]['commands'][$name];
                 }
             }
         }

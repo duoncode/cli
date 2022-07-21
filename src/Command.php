@@ -10,6 +10,7 @@ abstract class Command
 {
     protected string $name = '';
     protected string $group = '';
+    protected string $prefix = '';
     protected string $description = '';
     protected ?Output $output = null;
 
@@ -23,6 +24,11 @@ abstract class Command
     public function group(): string
     {
         return $this->group;
+    }
+
+    public function prefix(): string
+    {
+        return empty($this->prefix) ? strtolower($this->group) : $this->prefix;
     }
 
     public function description(): string
