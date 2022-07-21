@@ -41,16 +41,14 @@ class Runner
             } else {
                 $group = $command->group() ?: 'General';
                 $groups[$prefix] = [
-                    'title' => empty($prefix) ?
-                        'General' :
-                        $group . ' ' . $this->output->color('(' . $prefix . ')', 'gray'),
+                    'title' => empty($prefix) ? 'General' : $group,
                     'commands' => [$name => $command],
                 ];
             }
 
             $this->list[$name][] = $command;
 
-            $len = strlen($command->name());
+            $len = strlen($prefix . ':' . $command->name());
             $this->longestName = $len > $this->longestName ? $len : $this->longestName;
         }
 
@@ -80,7 +78,11 @@ class Runner
                 $p = $command->prefix();
                 $prefix = $p ? $p . ':' : '';
                 $name = $this->output->color($name, 'lightgreen');
-                $this->output->echo("  ${prefix}$name $desc\n");
+
+                // The added magic number takes colorization into
+                // account as it lengthens the string.
+                $prefixedName = str_pad($prefix . $name, $this->longestName + 13);
+                $this->output->echo("  $prefixedName$desc\n");
             }
         }
 
