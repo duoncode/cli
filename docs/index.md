@@ -20,7 +20,8 @@ use Conia\Cli\Command;
 
 class MyCommand extends Command {
     protected string $name = 'mycommand';
-    protected string $group = 'MyGroup';
+    protected string $prefix = 'grp'; // optional
+    protected string $group = 'MyGroup'; // used as prefix if it is missing
     protected string $description = 'This is my command description';
 
     public function run(): int
@@ -66,7 +67,7 @@ $ php run.php help
 Available commands:
 
 MyGroup
-    mycommand  This is my command description
+    grp:mycommand  This is my command description
 
 $ php run.php help mycommand
 Help entry for my command
