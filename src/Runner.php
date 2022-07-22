@@ -158,6 +158,8 @@ class Runner
                     if ($e->getCode() === self::AMBIGUOUS) {
                         return $this->showAmbiguousMessage($cmd);
                     }
+
+                    throw $e;
                 } catch (BadMethodCallException) {
                     echo "No help entry for $cmd\n";
                 }
@@ -169,9 +171,9 @@ class Runner
                 return $this->showHelp();
             }
         } catch (Throwable $e) {
-            $this->output->echo("\nError while running command '");
+            $this->output->echo("Error while running command '");
             $this->output->echo((string)($_SERVER['argv'][1] ?? '<no command given>'));
-            $this->output->echo("'.\n\n    Error message: " . $e->getMessage() . "\n");
+            $this->output->echo("':\n\n" . $e->getMessage() . "\n");
 
             return 1;
         }
