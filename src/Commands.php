@@ -18,11 +18,15 @@ class Commands
         $this->commands[] = $command;
     }
 
-    public function add(Command|array $commands): void
+    public function add(Commands|Command|array $commands): void
     {
         if (is_array($commands)) {
             foreach ($commands as $command) {
                 $this->add($command);
+            }
+        } elseif ($commands instanceof Commands) {
+            foreach ($commands->get() as $command) {
+                $this->addCommand($command);
             }
         } else {
             $this->addCommand($commands);
