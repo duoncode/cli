@@ -24,7 +24,7 @@ test('List commands (autocomplete)', function () {
     $_SERVER['argv'] = ['run', 'commands'];
     $runner = $this->getRunner();
     $runner->run();
-})->expectOutputString("bar:stuff\ndrivel\nerr\nerr:err\nfoo:drivel\nfoo:stuff\nstuff\n");
+})->expectOutputString("bar:stuff\ndrivel\nerr\nerr:err\nfoo:drivel\nfoo:stuff\n");
 
 
 test('Show command specific help', function () {

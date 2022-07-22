@@ -100,6 +100,13 @@ class Runner
         return 0;
     }
 
+    /**
+     * Displays a list of all available commands.
+     *
+     * With and without namespace/group. If a command appears in more than
+     * one namespace, e. g. foo:cmd and bar:cmd, only the namespaced ones
+     * will be displayed.
+     */
     public function showCommands(): int
     {
         $list = [];
@@ -109,17 +116,21 @@ class Runner
                 $prefix = $command->prefix();
 
                 if ($prefix) {
-                    $list[] = "$prefix:" . $command->name();
+                    $key = "$prefix:" . $command->name();
+                    $list[$key] = ($list[$key] ?? 0) + 1;
                 }
 
-                $list[] = $command->name();
+                $name = $command->name();
+                $list[$name] = ($list[$name] ?? 0) + 1;
             }
         }
 
-        asort($list);
+        ksort($list);
 
-        foreach (array_unique($list) as $item) {
-            $this->output->echo("$item\n");
+        foreach ($list as $name => $count) {
+            if ($count === 1) {
+                $this->output->echo("$name\n");
+            }
         }
 
         return 0;
