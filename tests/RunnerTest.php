@@ -20,6 +20,13 @@ test('Show help when called with help command', function () {
 })->expectOutputRegex("/available commands.*prints bar's stuff.*foo/si");
 
 
+test('List commands (autocomplete)', function () {
+    $_SERVER['argv'] = ['run', 'commands'];
+    $runner = $this->getRunner();
+    $runner->run();
+})->expectOutputString("bar:stuff\ndrivel\nerr\nerr:err\nfoo:drivel\nfoo:stuff\nstuff\n");
+
+
 test('Show command specific help', function () {
     $_SERVER['argv'] = ['run', 'help', 'foo:stuff'];
     $runner = $this->getRunner();

@@ -89,6 +89,31 @@ class Runner
         return 0;
     }
 
+    public function showCommands(): int
+    {
+        $list = [];
+
+        foreach ($this->toc as $group) {
+            foreach ($group['commands'] as $command) {
+                $prefix = $command->prefix();
+
+                if ($prefix) {
+                    $list[] = "$prefix:" . $command->name();
+                }
+
+                $list[] = $command->name();
+            }
+        }
+
+        asort($list);
+
+        foreach (array_unique($list) as $item) {
+            $this->output->echo("$item\n");
+        }
+
+        return 0;
+    }
+
     protected function showAmbiguousMessage(string $cmd): int
     {
         $this->output->echo("Ambiguous command. Please add the group name:\n\n");
@@ -150,6 +175,10 @@ class Runner
                     } else {
                         return $this->showHelp();
                     }
+                }
+
+                if ($cmd === 'commands') {
+                    return $this->showCommands();
                 }
 
                 try {
