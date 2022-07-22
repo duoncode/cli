@@ -62,27 +62,38 @@ class Runner
         }
     }
 
+    protected function echoGroup(string $title): void
+    {
+        $g = $this->output->color($title, 'yellow');
+        $this->output->echo("\n$g\n");
+    }
+
+    protected function echoCommand(string $prefix, string $name, string $desc): void
+    {
+        $prefix = $prefix ? $prefix . ':' : '';
+        $name = $this->output->color($name, 'lightgreen');
+
+        // The added magic number takes colorization into
+        // account as it lengthens the string.
+        $prefixedName = str_pad($prefix . $name, $this->longestName + 13);
+        $this->output->echo("  $prefixedName$desc\n");
+    }
+
     public function showHelp(): int
     {
         $script = $_SERVER['argv'][0];
         $this->output->echo("Usage: php $script [prefix:]command [arguments]\n\n");
         $this->output->echo("Prefixes are optional if the command is unambiguous.\n\n");
         $this->output->echo("Available commands:\n");
+        $this->echoGroup('General');
+        $this->echoCommand('', 'commands', 'Lists all available commands');
+        $this->echoCommand('', 'help', 'Displays this overview');
 
         foreach ($this->toc as $group) {
-            $g = $this->output->color(ucwords($group['title']), 'yellow');
-            $this->output->echo("\n$g\n");
+            $this->echoGroup($group['title']);
 
             foreach ($group['commands'] as $name => $command) {
-                $desc = $command->description();
-                $p = $command->prefix();
-                $prefix = $p ? $p . ':' : '';
-                $name = $this->output->color($name, 'lightgreen');
-
-                // The added magic number takes colorization into
-                // account as it lengthens the string.
-                $prefixedName = str_pad($prefix . $name, $this->longestName + 13);
-                $this->output->echo("  $prefixedName$desc\n");
+                $this->echoCommand($command->prefix(), $name, $command->description());
             }
         }
 
