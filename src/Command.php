@@ -36,6 +36,11 @@ abstract class Command
         return $this->description;
     }
 
+    public function script(): string
+    {
+        return $_SERVER['argv'][0];
+    }
+
     public function output(Output $output): static
     {
         $this->output = $output;
