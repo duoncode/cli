@@ -73,4 +73,32 @@ class Output
 
         return "\033[$first;${second}m$text\033[0m";
     }
+
+    public function indent(
+        string $text,
+        int $indent,
+        ?int $max = null,
+    ): string {
+        $spaces = str_repeat(' ', $indent);
+        /** @psalm-suppress ForbiddenCode */
+        $width = shell_exec('tput cols');
+
+        if ($width === null) {
+            // Need a way to force $width to be null in a sane way
+            // @codeCoverageIgnoreStart
+            return $spaces . $text;
+            // @codeCoverageIgnoreEnd
+        }
+
+        $width = (int)$width - $indent;
+
+        if ($max !== null && $max < $width) {
+            $width = $max;
+        }
+
+        $lines = explode("\n", wordwrap($text, $width, "\n"));
+        return implode("\n", array_map(function ($line) use ($spaces) {
+            return $spaces . $line;
+        }, $lines));
+    }
 }

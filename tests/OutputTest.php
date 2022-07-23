@@ -45,3 +45,17 @@ test('Background colors', function () {
     expect($output->color('test', 'white', 'gray'))->toBe("\033[1;37;47mtest\033[0m");
     expect($output->color('test', 'white', 'grey'))->toBe("\033[1;37;47mtest\033[0m");
 });
+
+
+test('Indent', function () {
+    $output = new Output('php://output');
+    $lorem = 'Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam ' .
+        'nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, ' .
+        'sed diam voluptua. At vero eos et accusam et justo duo dolores et ea ' .
+        'rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ' .
+        'ipsum dolor sit amet.';
+    $split = explode("\n", $output->indent($lorem, 4, 40));
+
+    expect($split[0])->toBe('    Lorem ipsum dolor sit amet, consetetur');
+    expect($split[4])->toBe('    At vero eos et accusam et justo duo');
+});

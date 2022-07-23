@@ -64,14 +64,14 @@ class Runner
 
     protected function echoGroup(string $title): void
     {
-        $g = $this->output->color($title, 'yellow');
+        $g = $this->output->color($title, 'brown');
         $this->output->echo("\n$g\n");
     }
 
     protected function echoCommand(string $prefix, string $name, string $desc): void
     {
         $prefix = $prefix ? $prefix . ':' : '';
-        $name = $this->output->color($name, 'lightgreen');
+        $name = $this->output->color($name, 'green');
 
         // The added magic number takes colorization into
         // account as it lengthens the string.
@@ -82,7 +82,8 @@ class Runner
     public function showHelp(): int
     {
         $script = $_SERVER['argv'][0];
-        $this->output->echo("Usage: php $script [prefix:]command [arguments]\n\n");
+        $this->output->echo($this->output->color('Usage:', 'brown') . "\n");
+        $this->output->echo("  php $script [prefix:]command [arguments]\n\n");
         $this->output->echo("Prefixes are optional if the command is unambiguous.\n\n");
         $this->output->echo("Available commands:\n");
         $this->echoGroup('General');
@@ -142,7 +143,7 @@ class Runner
         asort($this->list[$cmd]);
 
         foreach ($this->list[$cmd] as $command) {
-            $prefix = $this->output->color($command->prefix(), 'yellow');
+            $prefix = $this->output->color($command->prefix(), 'brown');
             $name = strtolower($command->name());
             $this->output->echo("  $prefix:$name\n");
         }
@@ -211,8 +212,6 @@ class Runner
                     }
 
                     throw $e;
-                } catch (BadMethodCallException) {
-                    echo "No help entry for $cmd\n";
                 }
 
                 echo "Command not found.\n";

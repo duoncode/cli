@@ -31,14 +31,14 @@ test('Show command specific help', function () {
     $_SERVER['argv'] = ['run', 'help', 'foo:stuff'];
     $runner = $this->getRunner();
     $runner->run();
-})->expectOutputString('foo:stuff help');
+})->expectOutputRegex('/php run foo:stuff.*Options:.*Lorem ipsum/s');
 
 
-test('Command specific help not available', function () {
+test('Command specific help default', function () {
     $_SERVER['argv'] = ['run', 'help', 'bar:stuff'];
     $runner = $this->getRunner();
     $runner->run();
-})->expectOutputRegex('/No help entry for bar:stuff/');
+})->expectOutputRegex('/php run bar:stuff/');
 
 
 test('Show help in order', function () {

@@ -50,13 +50,55 @@ abstract class Command
 
     public function echo(string $message): void
     {
-        if (isset($this->output)) {
-            $this->output->echo($message);
-        }
+        /** @psalm-suppress PossiblyNullReference */
+        $this->output->echo($message);
+    }
+
+    public function color(string $text, string $color, string $background = null): string
+    {
+        /** @psalm-suppress PossiblyNullReference */
+        return $this->output->color($text, $color, $background);
+    }
+
+    public function indent(
+        string $text,
+        int $indent,
+        ?int $max = null,
+    ): string {
+        /** @psalm-suppress PossiblyNullReference */
+        return $this->output->indent($text, $indent, $max);
     }
 
     public function help(): void
     {
-        throw new BadMethodCallException();
+        $this->helpHeader(withOptions: false);
+    }
+
+    protected function helpHeader(bool $withOptions = false): void
+    {
+        $script = $this->script();
+        $name = $this->name;
+        $prefix = $this->prefix();
+        $desc = $this->description;
+
+        if (!empty($desc)) {
+            $label = $this->color('Description:', 'brown') . "\n";
+            $this->echo("$label  $desc\n\n");
+        }
+
+        $usage = $this->color('Usage:', 'brown') . "\n  php $script $prefix:$name";
+
+        if ($withOptions) {
+            $this->echo("$usage [options]\n\n");
+            $this->echo($this->color('Options:', 'brown') . "\n");
+        } else {
+            $this->echo("$usage\n");
+        }
+    }
+
+    protected function helpOption(string $option, string $description): void
+    {
+        $this->echo('    ' . $this->color($option, 'green') . "\n");
+        $this->echo($this->indent($description, 8, 80) . "\n");
     }
 }
