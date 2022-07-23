@@ -1,0 +1,24 @@
+<?php 
+
+declare(strict_types=1);
+
+require __DIR__ . '/vendor/autoload.php';
+
+use Conia\Cli\Runner;
+use Conia\Cli\Commands;
+use Conia\Cli\Tests\Fixtures\BarStuff;
+use Conia\Cli\Tests\Fixtures\Erring;
+use Conia\Cli\Tests\Fixtures\FooDrivel;
+use Conia\Cli\Tests\Fixtures\FooStuff;
+
+$runner = new Runner(new Commands([
+    new BarStuff(),
+    new FooStuff(),
+    new FooDrivel(),
+    new Erring(),
+]));
+
+exit($runner->run());
+
+// vim: ft=php
+
