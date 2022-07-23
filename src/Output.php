@@ -86,7 +86,7 @@ class Output
         if ($width === null) {
             // Need a way to force $width to be null in a sane way
             // @codeCoverageIgnoreStart
-            return $spaces . $text;
+            $width = 80;
             // @codeCoverageIgnoreEnd
         }
 
