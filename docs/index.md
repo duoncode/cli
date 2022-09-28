@@ -88,7 +88,7 @@ Run the command:
 $ php run mycommand
 Run my command
 
-$ php run mygroup:mycommand
+$ php run grp:mycommand
 Run my command
 
 $ php run help
