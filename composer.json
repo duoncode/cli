@@ -30,8 +30,8 @@
     },
     "require-dev": {
         "pestphp/pest": "^1",
-        "vimeo/psalm": "^4",
-        "dealerdirect/phpcodesniffer-composer-installer": "^0.7",
+        "vimeo/psalm": "^5",
+        "dealerdirect/phpcodesniffer-composer-installer": "^1",
         "staabm/annotate-pull-request-from-checkstyle": "^1"
     },
     "config": {
