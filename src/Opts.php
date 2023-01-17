@@ -69,7 +69,7 @@ class Opts
         $opts = [];
         $key = null;
 
-        foreach ($_SERVER['argv'] as $arg) {
+        foreach ($_SERVER['argv'] ?? [] as $arg) {
             if (str_starts_with($arg, '-')) {
                 $key = $arg;
 

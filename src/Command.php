@@ -38,7 +38,7 @@ abstract class Command
 
     public function script(): string
     {
-        return $_SERVER['argv'][0];
+        return $_SERVER['argv'][0] ?? '';
     }
 
     public function output(Output $output): static

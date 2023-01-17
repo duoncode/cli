@@ -64,7 +64,7 @@ class Runner
 
     public function showHelp(): int
     {
-        $script = $_SERVER['argv'][0];
+        $script = $_SERVER['argv'][0] ?? '';
         $this->output->echo($this->output->color('Usage:', 'brown') . "\n");
         $this->output->echo("  php {$script} [prefix:]command [arguments]\n\n");
         $this->output->echo("Prefixes are optional if the command is unambiguous.\n\n");
@@ -159,7 +159,7 @@ class Runner
             return $this->showHelp();
         } catch (Throwable $e) {
             $this->output->echo("Error while running command '");
-            $this->output->echo((string)($_SERVER['argv'][1] ?? '<no command given>'));
+            $this->output->echo($_SERVER['argv'][1] ?? '<no command given>');
             $this->output->echo("':\n\n" . $e->getMessage() . "\n");
 
             return 1;
