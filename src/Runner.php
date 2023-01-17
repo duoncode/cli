@@ -62,28 +62,11 @@ class Runner
         }
     }
 
-    protected function echoGroup(string $title): void
-    {
-        $g = $this->output->color($title, 'brown');
-        $this->output->echo("\n$g\n");
-    }
-
-    protected function echoCommand(string $prefix, string $name, string $desc): void
-    {
-        $prefix = $prefix ? $prefix . ':' : '';
-        $name = $this->output->color($name, 'green');
-
-        // The added magic number takes colorization into
-        // account as it lengthens the string.
-        $prefixedName = str_pad($prefix . $name, $this->longestName + 13);
-        $this->output->echo("  $prefixedName$desc\n");
-    }
-
     public function showHelp(): int
     {
         $script = $_SERVER['argv'][0];
         $this->output->echo($this->output->color('Usage:', 'brown') . "\n");
-        $this->output->echo("  php $script [prefix:]command [arguments]\n\n");
+        $this->output->echo("  php {$script} [prefix:]command [arguments]\n\n");
         $this->output->echo("Prefixes are optional if the command is unambiguous.\n\n");
         $this->output->echo("Available commands:\n");
         $this->echoGroup('General');
@@ -117,7 +100,7 @@ class Runner
                 $prefix = $command->prefix();
 
                 if ($prefix) {
-                    $key = "$prefix:" . $command->name();
+                    $key = "{$prefix}:" . $command->name();
                     $list[$key] = ($list[$key] ?? 0) + 1;
                 }
 
@@ -130,57 +113,11 @@ class Runner
 
         foreach ($list as $name => $count) {
             if ($count === 1) {
-                $this->output->echo("$name\n");
+                $this->output->echo("{$name}\n");
             }
         }
 
         return 0;
-    }
-
-    protected function showAmbiguousMessage(string $cmd): int
-    {
-        $this->output->echo("Ambiguous command. Please add the group name:\n\n");
-        asort($this->list[$cmd]);
-
-        foreach ($this->list[$cmd] as $command) {
-            $prefix = $this->output->color($command->prefix(), 'brown');
-            $name = strtolower($command->name());
-            $this->output->echo("  $prefix:$name\n");
-        }
-
-        return 1;
-    }
-
-    protected function getCommand(string $cmd): Command
-    {
-        if (isset($this->list[$cmd])) {
-            if (count($this->list[$cmd]) === 1) {
-                return  $this->list[$cmd][0];
-            } else {
-                throw new ValueError('Ambiguous command', self::AMBIGUOUS);
-            }
-        } else {
-            if (str_contains($cmd, ':')) {
-                [$group, $name] = explode(':', $cmd);
-
-                if (isset($this->toc[$group]['commands'][$name])) {
-                    return $this->toc[$group]['commands'][$name];
-                }
-            }
-        }
-
-        throw new ValueError('Command not found', self::NOTFOUND);
-    }
-
-    protected function runCommand(Command $command, bool $isHelpCall): int|string
-    {
-        if ($isHelpCall) {
-            $command->output($this->output)->help();
-
-            return 0;
-        }
-
-        return $command->output($this->output)->run();
     }
 
     public function run(): int|string
@@ -217,9 +154,9 @@ class Runner
                 echo "Command not found.\n";
 
                 return 1;
-            } else {
-                return $this->showHelp();
             }
+
+            return $this->showHelp();
         } catch (Throwable $e) {
             $this->output->echo("Error while running command '");
             $this->output->echo((string)($_SERVER['argv'][1] ?? '<no command given>'));
@@ -227,5 +164,68 @@ class Runner
 
             return 1;
         }
+    }
+
+    protected function echoGroup(string $title): void
+    {
+        $g = $this->output->color($title, 'brown');
+        $this->output->echo("\n{$g}\n");
+    }
+
+    protected function echoCommand(string $prefix, string $name, string $desc): void
+    {
+        $prefix = $prefix ? $prefix . ':' : '';
+        $name = $this->output->color($name, 'green');
+
+        // The added magic number takes colorization into
+        // account as it lengthens the string.
+        $prefixedName = str_pad($prefix . $name, $this->longestName + 13);
+        $this->output->echo("  {$prefixedName}{$desc}\n");
+    }
+
+    protected function showAmbiguousMessage(string $cmd): int
+    {
+        $this->output->echo("Ambiguous command. Please add the group name:\n\n");
+        asort($this->list[$cmd]);
+
+        foreach ($this->list[$cmd] as $command) {
+            $prefix = $this->output->color($command->prefix(), 'brown');
+            $name = strtolower($command->name());
+            $this->output->echo("  {$prefix}:{$name}\n");
+        }
+
+        return 1;
+    }
+
+    protected function getCommand(string $cmd): Command
+    {
+        if (isset($this->list[$cmd])) {
+            if (count($this->list[$cmd]) === 1) {
+                return $this->list[$cmd][0];
+            }
+
+            throw new ValueError('Ambiguous command', self::AMBIGUOUS);
+        } else {
+            if (str_contains($cmd, ':')) {
+                [$group, $name] = explode(':', $cmd);
+
+                if (isset($this->toc[$group]['commands'][$name])) {
+                    return $this->toc[$group]['commands'][$name];
+                }
+            }
+        }
+
+        throw new ValueError('Command not found', self::NOTFOUND);
+    }
+
+    protected function runCommand(Command $command, bool $isHelpCall): int|string
+    {
+        if ($isHelpCall) {
+            $command->output($this->output)->help();
+
+            return 0;
+        }
+
+        return $command->output($this->output)->run();
     }
 }

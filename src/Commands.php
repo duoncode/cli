@@ -13,11 +13,6 @@ class Commands
         $this->add($commands);
     }
 
-    protected function addCommand(Command $command): void
-    {
-        $this->commands[] = $command;
-    }
-
     public function add(Commands|Command|array $commands): void
     {
         if (is_array($commands)) {
@@ -36,5 +31,10 @@ class Commands
     public function get(): array
     {
         return $this->commands;
+    }
+
+    protected function addCommand(Command $command): void
+    {
+        $this->commands[] = $command;
     }
 }

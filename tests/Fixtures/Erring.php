@@ -12,7 +12,7 @@ class Erring extends Command
     protected string $name = 'err';
     protected string $group = 'Errors';
     protected string $prefix = 'err';
-    protected string $description = "Throws an error";
+    protected string $description = 'Throws an error';
 
     public function run(): int
     {

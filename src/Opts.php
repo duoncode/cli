@@ -8,7 +8,7 @@ use ValueError;
 
 /**
  * PHP's native `getopt` stops after the first "non-option" argument
- * which in our case is the command in `php run <command>`
+ * which in our case is the command in `php run <command>`.
  *
  * `-arg`, `--arg` and even `---arg` are treated equally.
  */
@@ -21,42 +21,9 @@ class Opts
         $this->opts = $this->getOpts();
     }
 
-    protected static function getOpts(): array
-    {
-        $opts = [];
-        $key = null;
-
-        foreach ($_SERVER['argv'] as $arg) {
-            if (str_starts_with($arg, '-')) {
-                $key = $arg;
-
-                if (!isset($opts[$key])) {
-                    $opts[$key] = new Opt();
-                }
-            } else {
-                if ($key) {
-                    $opts[$key]->set($arg);
-                }
-            }
-        }
-
-        return $opts;
-    }
-
     public function has(string $key): bool
     {
         return isset($this->opts[$key]);
-    }
-
-    protected function validate(string $key): void
-    {
-        if (!isset($this->opts[$key])) {
-            throw new ValueError("Unknown option: $key");
-        }
-
-        if (isset($this->opts[$key]) && !$this->opts[$key]->isset()) {
-            throw new ValueError("No value given for $key");
-        }
     }
 
     public function get(string $key, string $default = ''): string
@@ -95,5 +62,38 @@ class Opts
         }
 
         return $default;
+    }
+
+    protected static function getOpts(): array
+    {
+        $opts = [];
+        $key = null;
+
+        foreach ($_SERVER['argv'] as $arg) {
+            if (str_starts_with($arg, '-')) {
+                $key = $arg;
+
+                if (!isset($opts[$key])) {
+                    $opts[$key] = new Opt();
+                }
+            } else {
+                if ($key) {
+                    $opts[$key]->set($arg);
+                }
+            }
+        }
+
+        return $opts;
+    }
+
+    protected function validate(string $key): void
+    {
+        if (!isset($this->opts[$key])) {
+            throw new ValueError("Unknown option: {$key}");
+        }
+
+        if (isset($this->opts[$key]) && !$this->opts[$key]->isset()) {
+            throw new ValueError("No value given for {$key}");
+        }
     }
 }

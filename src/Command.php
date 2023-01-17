@@ -83,16 +83,16 @@ abstract class Command
 
         if (!empty($desc)) {
             $label = $this->color('Description:', 'brown') . "\n";
-            $this->echo("$label  $desc\n\n");
+            $this->echo("{$label}  {$desc}\n\n");
         }
 
-        $usage = $this->color('Usage:', 'brown') . "\n  php $script $prefix:$name";
+        $usage = $this->color('Usage:', 'brown') . "\n  php {$script} {$prefix}:{$name}";
 
         if ($withOptions) {
-            $this->echo("$usage [options]\n\n");
+            $this->echo("{$usage} [options]\n\n");
             $this->echo($this->color('Options:', 'brown') . "\n");
         } else {
-            $this->echo("$usage\n");
+            $this->echo("{$usage}\n");
         }
     }
 

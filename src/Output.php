@@ -47,15 +47,6 @@ class Output
     {
     }
 
-    protected function getStream(): mixed
-    {
-        if (!isset($this->stream)) {
-            $this->stream = fopen($this->target, 'w');
-        }
-
-        return $this->stream;
-    }
-
     public function echo(string $message): void
     {
         fwrite($this->getStream(), $message);
@@ -68,10 +59,11 @@ class Output
 
         if ($background) {
             $bg = $this->bg[$background];
-            return "\033[$first;${second};${bg}m$text\033[0m";
+
+            return "\033[{$first};{$second};{$bg}m{$text}\033[0m";
         }
 
-        return "\033[$first;${second}m$text\033[0m";
+        return "\033[{$first};{$second}m{$text}\033[0m";
     }
 
     public function indent(
@@ -80,6 +72,7 @@ class Output
         ?int $max = null,
     ): string {
         $spaces = str_repeat(' ', $indent);
+
         /** @psalm-suppress ForbiddenCode */
         $width = shell_exec('tput cols');
 
@@ -97,8 +90,18 @@ class Output
         }
 
         $lines = explode("\n", wordwrap($text, $width, "\n"));
+
         return implode("\n", array_map(function ($line) use ($spaces) {
             return $spaces . $line;
         }, $lines));
+    }
+
+    protected function getStream(): mixed
+    {
+        if (!isset($this->stream)) {
+            $this->stream = fopen($this->target, 'w');
+        }
+
+        return $this->stream;
     }
 }

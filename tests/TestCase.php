@@ -8,6 +8,11 @@ use Conia\Cli\Commands;
 use Conia\Cli\Runner;
 use PHPUnit\Framework\TestCase as BaseTestCase;
 
+/**
+ * @internal
+ *
+ * @coversNothing
+ */
 class TestCase extends BaseTestCase
 {
     public function getCommands(): Commands
