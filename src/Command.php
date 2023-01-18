@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Conia\Cli;
 
-use BadMethodCallException;
+use RuntimeException;
 
 abstract class Command
 {
@@ -50,14 +50,22 @@ abstract class Command
 
     public function echo(string $message): void
     {
-        /** @psalm-suppress PossiblyNullReference */
-        $this->output->echo($message);
+        if ($this->output) {
+            $this->output->echo($message);
+
+            return;
+        }
+
+        throw new RuntimeException('Output missing');
     }
 
     public function color(string $text, string $color, string $background = null): string
     {
-        /** @psalm-suppress PossiblyNullReference */
-        return $this->output->color($text, $color, $background);
+        if ($this->output) {
+            return $this->output->color($text, $color, $background);
+        }
+
+        throw new RuntimeException('Output missing');
     }
 
     public function indent(
@@ -65,8 +73,11 @@ abstract class Command
         int $indent,
         ?int $max = null,
     ): string {
-        /** @psalm-suppress PossiblyNullReference */
-        return $this->output->indent($text, $indent, $max);
+        if ($this->output) {
+            return $this->output->indent($text, $indent, $max);
+        }
+
+        throw new RuntimeException('Output missing');
     }
 
     public function help(): void

@@ -22,3 +22,21 @@ test('Command getters', function () {
     expect($err->group())->toBe('Errors');
     expect($err->prefix())->toBe('err');
 });
+
+
+test('Echo fails', function () {
+    $foo = new FooStuff();
+    $foo->echo('error');
+})->throws(RuntimeException::class, 'Output missing');
+
+
+test('Color fails', function () {
+    $foo = new FooStuff();
+    $foo->color('error', '#ffffff');
+})->throws(RuntimeException::class, 'Output missing');
+
+
+test('Indent fails', function () {
+    $foo = new FooStuff();
+    $foo->indent('error', 1);
+})->throws(RuntimeException::class, 'Output missing');
