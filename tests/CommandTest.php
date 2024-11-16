@@ -2,8 +2,8 @@
 
 declare(strict_types=1);
 
-use Conia\Cli\Tests\Fixtures\Erring;
-use Conia\Cli\Tests\Fixtures\FooStuff;
+use FiveOrbs\Cli\Tests\Fixtures\Erring;
+use FiveOrbs\Cli\Tests\Fixtures\FooStuff;
 
 test('Command getters', function () {
     $_SERVER['argv'] = ['run'];

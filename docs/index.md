@@ -1,7 +1,7 @@
 ---
 title: Introduction
 ---
-Conia Cli
+FiveOrbs Cli
 =========
 
 A command line interface helper like [Laravel's Artisan](https://laravel.com/docs/9.x/artisan) 
@@ -9,14 +9,14 @@ with way less magic.
 
 ## Installation
 
-    composer require conia/cli
+    composer require fiveorbs/cli
 
 ## Quick Start
 
 Create a Command:
 
 ```php
-use Conia\Cli\Command;
+use FiveOrbs\Cli\Command;
 
 class MyCommand extends Command {
     /**
@@ -74,7 +74,7 @@ Create a runner script, e. g. `run.php` or simply `run`:
 
 require __DIR__ . '/vendor/autoload.php';
 
-use Conia\Cli\{Runner, Commands};
+use FiveOrbs\Cli\{Runner, Commands};
 use MyCommand;
 
 $commands = new Commands([new MyCommand()]);

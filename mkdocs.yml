@@ -1,12 +1,12 @@
-site_name: Conia Cli
+site_name: FiveOrbs Cli
 copyright: © 2022 ebene fünf GmbH
 nav:
   - index.md
 theme:
-    name: conia
-repo_url: https://github.com/coniadev/cli
+    name: fiveorbs
+repo_url: https://github.com/fiveorb/cli
 extra:
-    project: Conia Cli
+    project: FiveOrbs Cli
 plugins:
     - search
     - macros:

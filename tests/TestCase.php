@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Conia\Cli\Tests;
+namespace FiveOrbs\Cli\Tests;
 
-use Conia\Cli\Commands;
-use Conia\Cli\Runner;
+use FiveOrbs\Cli\Commands;
+use FiveOrbs\Cli\Runner;
 use PHPUnit\Framework\TestCase as BaseTestCase;
 
 /**

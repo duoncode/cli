@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-use Conia\Cli\Tests\TestCase;
+use FiveOrbs\Cli\Tests\TestCase;
 
 uses(TestCase::class);
 

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-use Conia\Cli\Output;
+use FiveOrbs\Cli\Output;
 
 test('Foreground colors', function () {
     $output = new Output('php://output');

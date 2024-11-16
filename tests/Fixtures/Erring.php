@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Conia\Cli\Tests\Fixtures;
+namespace FiveOrbs\Cli\Tests\Fixtures;
 
-use Conia\Cli\Command;
+use FiveOrbs\Cli\Command;
 use Exception;
 
 class Erring extends Command

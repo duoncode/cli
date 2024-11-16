@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-use Conia\Cli\Opts;
+use FiveOrbs\Cli\Opts;
 
 beforeEach(function () {
     $_SERVER['argv'] = [

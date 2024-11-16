@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-use Conia\Cli\Commands;
-use Conia\Cli\Tests\Fixtures\BarStuff;
-use Conia\Cli\Tests\Fixtures\Erring;
-use Conia\Cli\Tests\Fixtures\FooDrivel;
-use Conia\Cli\Tests\Fixtures\FooStuff;
+use FiveOrbs\Cli\Commands;
+use FiveOrbs\Cli\Tests\Fixtures\BarStuff;
+use FiveOrbs\Cli\Tests\Fixtures\Erring;
+use FiveOrbs\Cli\Tests\Fixtures\FooDrivel;
+use FiveOrbs\Cli\Tests\Fixtures\FooStuff;
 
 test('Init empty then add one Command', function () {
     $commands = new Commands();

@@ -1,28 +1,28 @@
 {
-    "name": "conia/cli",
-    "description": "Conia cli tools/runner",
+    "name": "fiveorbs/cli",
+    "description": "FiveOrbs cli tools/runner",
     "type": "library",
     "license": "MIT",
     "authors": [
         {
             "name": "ebene fünf GmbH",
-            "email": "conia@ebenefuenf.de",
+            "email": "fiveorbs@ebenefuenf.de",
             "role": "Developer"
         }
     ],
-    "homepage": "https://conia.dev/boiler",
+    "homepage": "https://fiveorbs.dev/boiler",
     "keywords": [
-        "conia",
+        "fiveorbs",
         "cli"
     ],
     "autoload": {
         "psr-4": {
-            "Conia\\Cli\\": "src/"
+            "FiveOrbs\\Cli\\": "src/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "Conia\\Cli\\Tests\\": "tests"
+            "FiveOrbs\\Cli\\Tests\\": "tests"
         }
     },
     "require": {
