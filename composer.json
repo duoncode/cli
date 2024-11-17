@@ -1,43 +1,44 @@
 {
-    "name": "fiveorbs/cli",
-    "description": "FiveOrbs cli tools/runner",
-    "type": "library",
-    "license": "MIT",
-    "authors": [
-        {
-            "name": "ebene fünf GmbH",
-            "email": "fiveorbs@ebenefuenf.de",
-            "role": "Developer"
-        }
-    ],
-    "homepage": "https://fiveorbs.dev/boiler",
-    "keywords": [
-        "fiveorbs",
-        "cli"
-    ],
-    "autoload": {
-        "psr-4": {
-            "FiveOrbs\\Cli\\": "src/"
-        }
-    },
-    "autoload-dev": {
-        "psr-4": {
-            "FiveOrbs\\Cli\\Tests\\": "tests"
-        }
-    },
-    "require": {
-        "php": ">=8.1"
-    },
-    "require-dev": {
-        "pestphp/pest": "^1",
-        "vimeo/psalm": "^5",
-        "dealerdirect/phpcodesniffer-composer-installer": "^1",
-        "staabm/annotate-pull-request-from-checkstyle": "^1"
-    },
-    "config": {
-        "allow-plugins": {
-            "pestphp/pest-plugin": true,
-            "dealerdirect/phpcodesniffer-composer-installer": true
-        }
-    }
+	"name": "fiveorbs/cli",
+	"description": "FiveOrbs cli tools/runner",
+	"type": "library",
+	"license": "MIT",
+	"authors": [
+		{
+			"name": "ebene fünf GmbH",
+			"email": "fiveorbs@ebenefuenf.de",
+			"role": "Developer"
+		}
+	],
+	"homepage": "https://fiveorbs.dev/boiler",
+	"keywords": [
+		"fiveorbs",
+		"cli"
+	],
+	"autoload": {
+		"psr-4": {
+			"FiveOrbs\\Cli\\": "src/"
+		}
+	},
+	"autoload-dev": {
+		"psr-4": {
+			"FiveOrbs\\Cli\\Tests\\": "tests"
+		}
+	},
+	"require": {
+		"php": ">=8.1"
+	},
+	"require-dev": {
+		"fiveorbs/dev": "^1.1",
+		"pestphp/pest": "^1",
+		"vimeo/psalm": "^5",
+		"dealerdirect/phpcodesniffer-composer-installer": "^1",
+		"staabm/annotate-pull-request-from-checkstyle": "^1"
+	},
+	"config": {
+		"allow-plugins": {
+			"pestphp/pest-plugin": true,
+			"dealerdirect/phpcodesniffer-composer-installer": true
+		}
+	}
 }
