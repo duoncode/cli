@@ -10,222 +10,223 @@ use ValueError;
 
 class Runner
 {
-    protected const AMBIGUOUS = 1;
-    protected const NOTFOUND = 2;
+	protected const AMBIGUOUS = 1;
+	protected const NOTFOUND = 2;
 
-    // The commands ordered by group and name
-    protected array $toc = [];
-    // The commands indexed by name only
-    protected array $list = [];
-    protected Output $output;
-    protected int $longestName = 0;
+	// The commands ordered by group and name
+	protected array $toc = [];
 
-    public function __construct(
-        Commands $commands,
-        string $output = 'php://output'
-    ) {
-        $this->output = new Output($output);
-        $this->orderCommands($commands);
-    }
+	// The commands indexed by name only
+	protected array $list = [];
+	protected Output $output;
+	protected int $longestName = 0;
 
-    public function orderCommands(Commands $commands): void
-    {
-        $groups = [];
+	public function __construct(
+		Commands $commands,
+		string $output = 'php://output',
+	) {
+		$this->output = new Output($output);
+		$this->orderCommands($commands);
+	}
 
-        foreach ($commands->get() as $command) {
-            $name = strtolower($command->name());
-            $prefix = $command->prefix();
+	public function orderCommands(Commands $commands): void
+	{
+		$groups = [];
 
-            if (array_key_exists($prefix, $groups)) {
-                $groups[$prefix]['commands'][$name] = $command;
-            } else {
-                $group = $command->group() ?: 'General';
-                $groups[$prefix] = [
-                    'title' => empty($prefix) ? 'General' : $group,
-                    'commands' => [$name => $command],
-                ];
-            }
+		foreach ($commands->get() as $command) {
+			$name = strtolower($command->name());
+			$prefix = $command->prefix();
 
-            $this->list[$name][] = $command;
+			if (array_key_exists($prefix, $groups)) {
+				$groups[$prefix]['commands'][$name] = $command;
+			} else {
+				$group = $command->group() ?: 'General';
+				$groups[$prefix] = [
+					'title' => empty($prefix) ? 'General' : $group,
+					'commands' => [$name => $command],
+				];
+			}
 
-            $len = strlen($prefix . ':' . $command->name());
-            $this->longestName = $len > $this->longestName ? $len : $this->longestName;
-        }
+			$this->list[$name][] = $command;
 
-        ksort($groups);
+			$len = strlen($prefix . ':' . $command->name());
+			$this->longestName = $len > $this->longestName ? $len : $this->longestName;
+		}
 
-        foreach ($groups as $name => $group) {
-            $commands = $group['commands'];
-            ksort($commands);
-            $group['commands'] = $commands;
-            $this->toc[$name] = $group;
-        }
-    }
+		ksort($groups);
 
-    public function showHelp(): int
-    {
-        $script = $_SERVER['argv'][0] ?? '';
-        $this->output->echo($this->output->color('Usage:', 'brown') . "\n");
-        $this->output->echo("  php {$script} [prefix:]command [arguments]\n\n");
-        $this->output->echo("Prefixes are optional if the command is unambiguous.\n\n");
-        $this->output->echo("Available commands:\n");
-        $this->echoGroup('General');
-        $this->echoCommand('', 'commands', 'Lists all available commands');
-        $this->echoCommand('', 'help', 'Displays this overview');
+		foreach ($groups as $name => $group) {
+			$commands = $group['commands'];
+			ksort($commands);
+			$group['commands'] = $commands;
+			$this->toc[$name] = $group;
+		}
+	}
 
-        foreach ($this->toc as $group) {
-            $this->echoGroup($group['title']);
+	public function showHelp(): int
+	{
+		$script = $_SERVER['argv'][0] ?? '';
+		$this->output->echo($this->output->color('Usage:', 'brown') . "\n");
+		$this->output->echo("  php {$script} [prefix:]command [arguments]\n\n");
+		$this->output->echo("Prefixes are optional if the command is unambiguous.\n\n");
+		$this->output->echo("Available commands:\n");
+		$this->echoGroup('General');
+		$this->echoCommand('', 'commands', 'Lists all available commands');
+		$this->echoCommand('', 'help', 'Displays this overview');
 
-            foreach ($group['commands'] as $name => $command) {
-                $this->echoCommand($command->prefix(), $name, $command->description());
-            }
-        }
+		foreach ($this->toc as $group) {
+			$this->echoGroup($group['title']);
 
-        return 0;
-    }
+			foreach ($group['commands'] as $name => $command) {
+				$this->echoCommand($command->prefix(), $name, $command->description());
+			}
+		}
 
-    /**
-     * Displays a list of all available commands.
-     *
-     * With and without namespace/group. If a command appears in more than
-     * one namespace, e. g. foo:cmd and bar:cmd, only the namespaced ones
-     * will be displayed.
-     */
-    public function showCommands(): int
-    {
-        $list = [];
+		return 0;
+	}
 
-        foreach ($this->toc as $group) {
-            foreach ($group['commands'] as $command) {
-                $prefix = $command->prefix();
+	/**
+	 * Displays a list of all available commands.
+	 *
+	 * With and without namespace/group. If a command appears in more than
+	 * one namespace, e. g. foo:cmd and bar:cmd, only the namespaced ones
+	 * will be displayed.
+	 */
+	public function showCommands(): int
+	{
+		$list = [];
 
-                if ($prefix) {
-                    $key = "{$prefix}:" . $command->name();
-                    $list[$key] = ($list[$key] ?? 0) + 1;
-                }
+		foreach ($this->toc as $group) {
+			foreach ($group['commands'] as $command) {
+				$prefix = $command->prefix();
 
-                $name = $command->name();
-                $list[$name] = ($list[$name] ?? 0) + 1;
-            }
-        }
+				if ($prefix) {
+					$key = "{$prefix}:" . $command->name();
+					$list[$key] = ($list[$key] ?? 0) + 1;
+				}
 
-        ksort($list);
+				$name = $command->name();
+				$list[$name] = ($list[$name] ?? 0) + 1;
+			}
+		}
 
-        foreach ($list as $name => $count) {
-            if ($count === 1) {
-                $this->output->echo("{$name}\n");
-            }
-        }
+		ksort($list);
 
-        return 0;
-    }
+		foreach ($list as $name => $count) {
+			if ($count === 1) {
+				$this->output->echo("{$name}\n");
+			}
+		}
 
-    public function run(): int|string
-    {
-        try {
-            if (isset($_SERVER['argv'][1])) {
-                $cmd = strtolower($_SERVER['argv'][1]);
-                $isHelpCall = false;
+		return 0;
+	}
 
-                if ($cmd === 'help') {
-                    $isHelpCall = true;
+	public function run(): int|string
+	{
+		try {
+			if (isset($_SERVER['argv'][1])) {
+				$cmd = strtolower($_SERVER['argv'][1]);
+				$isHelpCall = false;
 
-                    if (isset($_SERVER['argv'][2])) {
-                        $cmd = strtolower($_SERVER['argv'][2]);
-                    } else {
-                        return $this->showHelp();
-                    }
-                }
+				if ($cmd === 'help') {
+					$isHelpCall = true;
 
-                if ($cmd === 'commands') {
-                    return $this->showCommands();
-                }
+					if (isset($_SERVER['argv'][2])) {
+						$cmd = strtolower($_SERVER['argv'][2]);
+					} else {
+						return $this->showHelp();
+					}
+				}
 
-                try {
-                    return $this->runCommand($this->getCommand($cmd), $isHelpCall);
-                } catch (ValueError $e) {
-                    if ($e->getCode() === self::AMBIGUOUS) {
-                        return $this->showAmbiguousMessage($cmd);
-                    }
+				if ($cmd === 'commands') {
+					return $this->showCommands();
+				}
 
-                    throw $e;
-                }
+				try {
+					return $this->runCommand($this->getCommand($cmd), $isHelpCall);
+				} catch (ValueError $e) {
+					if ($e->getCode() === self::AMBIGUOUS) {
+						return $this->showAmbiguousMessage($cmd);
+					}
 
-                echo "Command not found.\n";
+					throw $e;
+				}
 
-                return 1;
-            }
+				echo "Command not found.\n";
 
-            return $this->showHelp();
-        } catch (Throwable $e) {
-            $this->output->echo("Error while running command '");
-            $this->output->echo($_SERVER['argv'][1] ?? '<no command given>');
-            $this->output->echo("':\n\n" . $e->getMessage() . "\n");
+				return 1;
+			}
 
-            return 1;
-        }
-    }
+			return $this->showHelp();
+		} catch (Throwable $e) {
+			$this->output->echo("Error while running command '");
+			$this->output->echo($_SERVER['argv'][1] ?? '<no command given>');
+			$this->output->echo("':\n\n" . $e->getMessage() . "\n");
 
-    protected function echoGroup(string $title): void
-    {
-        $g = $this->output->color($title, 'brown');
-        $this->output->echo("\n{$g}\n");
-    }
+			return 1;
+		}
+	}
 
-    protected function echoCommand(string $prefix, string $name, string $desc): void
-    {
-        $prefix = $prefix ? $prefix . ':' : '';
-        $name = $this->output->color($name, 'green');
+	protected function echoGroup(string $title): void
+	{
+		$g = $this->output->color($title, 'brown');
+		$this->output->echo("\n{$g}\n");
+	}
 
-        // The added magic number takes colorization into
-        // account as it lengthens the string.
-        $prefixedName = str_pad($prefix . $name, $this->longestName + 13);
-        $this->output->echo("  {$prefixedName}{$desc}\n");
-    }
+	protected function echoCommand(string $prefix, string $name, string $desc): void
+	{
+		$prefix = $prefix ? $prefix . ':' : '';
+		$name = $this->output->color($name, 'green');
 
-    protected function showAmbiguousMessage(string $cmd): int
-    {
-        $this->output->echo("Ambiguous command. Please add the group name:\n\n");
-        asort($this->list[$cmd]);
+		// The added magic number takes colorization into
+		// account as it lengthens the string.
+		$prefixedName = str_pad($prefix . $name, $this->longestName + 13);
+		$this->output->echo("  {$prefixedName}{$desc}\n");
+	}
 
-        foreach ($this->list[$cmd] as $command) {
-            $prefix = $this->output->color($command->prefix(), 'brown');
-            $name = strtolower($command->name());
-            $this->output->echo("  {$prefix}:{$name}\n");
-        }
+	protected function showAmbiguousMessage(string $cmd): int
+	{
+		$this->output->echo("Ambiguous command. Please add the group name:\n\n");
+		asort($this->list[$cmd]);
 
-        return 1;
-    }
+		foreach ($this->list[$cmd] as $command) {
+			$prefix = $this->output->color($command->prefix(), 'brown');
+			$name = strtolower($command->name());
+			$this->output->echo("  {$prefix}:{$name}\n");
+		}
 
-    protected function getCommand(string $cmd): Command
-    {
-        if (isset($this->list[$cmd])) {
-            if (count($this->list[$cmd]) === 1) {
-                return $this->list[$cmd][0];
-            }
+		return 1;
+	}
 
-            throw new ValueError('Ambiguous command', self::AMBIGUOUS);
-        } else {
-            if (str_contains($cmd, ':')) {
-                [$group, $name] = explode(':', $cmd);
+	protected function getCommand(string $cmd): Command
+	{
+		if (isset($this->list[$cmd])) {
+			if (count($this->list[$cmd]) === 1) {
+				return $this->list[$cmd][0];
+			}
 
-                if (isset($this->toc[$group]['commands'][$name])) {
-                    return $this->toc[$group]['commands'][$name];
-                }
-            }
-        }
+			throw new ValueError('Ambiguous command', self::AMBIGUOUS);
+		} else {
+			if (str_contains($cmd, ':')) {
+				[$group, $name] = explode(':', $cmd);
 
-        throw new ValueError('Command not found', self::NOTFOUND);
-    }
+				if (isset($this->toc[$group]['commands'][$name])) {
+					return $this->toc[$group]['commands'][$name];
+				}
+			}
+		}
 
-    protected function runCommand(Command $command, bool $isHelpCall): int|string
-    {
-        if ($isHelpCall) {
-            $command->output($this->output)->help();
+		throw new ValueError('Command not found', self::NOTFOUND);
+	}
 
-            return 0;
-        }
+	protected function runCommand(Command $command, bool $isHelpCall): int|string
+	{
+		if ($isHelpCall) {
+			$command->output($this->output)->help();
 
-        return $command->output($this->output)->run();
-    }
+			return 0;
+		}
+
+		return $command->output($this->output)->run();
+	}
 }

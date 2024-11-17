@@ -14,86 +14,86 @@ use ValueError;
  */
 class Opts
 {
-    protected readonly array $opts;
+	protected readonly array $opts;
 
-    public function __construct()
-    {
-        $this->opts = $this->getOpts();
-    }
+	public function __construct()
+	{
+		$this->opts = $this->getOpts();
+	}
 
-    public function has(string $key): bool
-    {
-        return isset($this->opts[$key]);
-    }
+	public function has(string $key): bool
+	{
+		return isset($this->opts[$key]);
+	}
 
-    public function get(string $key, string $default = ''): string
-    {
-        if (func_num_args() === 1) {
-            $this->validate($key);
+	public function get(string $key, string $default = ''): string
+	{
+		if (func_num_args() === 1) {
+			$this->validate($key);
 
-            return $this->opts[$key]->get();
-        }
+			return $this->opts[$key]->get();
+		}
 
-        if (!$this->has($key)) {
-            return $default;
-        }
+		if (!$this->has($key)) {
+			return $default;
+		}
 
-        if ($this->opts[$key]->isset()) {
-            return $this->opts[$key]->get();
-        }
+		if ($this->opts[$key]->isset()) {
+			return $this->opts[$key]->get();
+		}
 
-        return $default;
-    }
+		return $default;
+	}
 
-    public function all(string $key, array $default = []): array
-    {
-        if (func_num_args() === 1) {
-            $this->validate($key);
+	public function all(string $key, array $default = []): array
+	{
+		if (func_num_args() === 1) {
+			$this->validate($key);
 
-            return $this->opts[$key]->all();
-        }
+			return $this->opts[$key]->all();
+		}
 
-        if (!$this->has($key)) {
-            return $default;
-        }
+		if (!$this->has($key)) {
+			return $default;
+		}
 
-        if ($this->opts[$key]->isset()) {
-            return $this->opts[$key]->all();
-        }
+		if ($this->opts[$key]->isset()) {
+			return $this->opts[$key]->all();
+		}
 
-        return $default;
-    }
+		return $default;
+	}
 
-    protected static function getOpts(): array
-    {
-        $opts = [];
-        $key = null;
+	protected static function getOpts(): array
+	{
+		$opts = [];
+		$key = null;
 
-        foreach ($_SERVER['argv'] ?? [] as $arg) {
-            if (str_starts_with($arg, '-')) {
-                $key = $arg;
+		foreach ($_SERVER['argv'] ?? [] as $arg) {
+			if (str_starts_with($arg, '-')) {
+				$key = $arg;
 
-                if (!isset($opts[$key])) {
-                    $opts[$key] = new Opt();
-                }
-            } else {
-                if ($key) {
-                    $opts[$key]->set($arg);
-                }
-            }
-        }
+				if (!isset($opts[$key])) {
+					$opts[$key] = new Opt();
+				}
+			} else {
+				if ($key) {
+					$opts[$key]->set($arg);
+				}
+			}
+		}
 
-        return $opts;
-    }
+		return $opts;
+	}
 
-    protected function validate(string $key): void
-    {
-        if (!isset($this->opts[$key])) {
-            throw new ValueError("Unknown option: {$key}");
-        }
+	protected function validate(string $key): void
+	{
+		if (!isset($this->opts[$key])) {
+			throw new ValueError("Unknown option: {$key}");
+		}
 
-        if (isset($this->opts[$key]) && !$this->opts[$key]->isset()) {
-            throw new ValueError("No value given for {$key}");
-        }
-    }
+		if (isset($this->opts[$key]) && !$this->opts[$key]->isset()) {
+			throw new ValueError("No value given for {$key}");
+		}
+	}
 }
