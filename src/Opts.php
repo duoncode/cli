@@ -21,9 +21,13 @@ class Opts
 		$this->opts = $this->getOpts();
 	}
 
-	public function has(string $key): bool
+	public function has(string $key, bool $default = false): bool
 	{
-		return isset($this->opts[$key]);
+		if (isset($this->opts[$key])) {
+			return true;
+		}
+
+		return $default;
 	}
 
 	public function get(string $key, string $default = ''): string
