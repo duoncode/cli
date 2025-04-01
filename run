@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 require __DIR__ . '/vendor/autoload.php';
 
-use FiveOrbs\Cli\Runner;
-use FiveOrbs\Cli\Commands;
-use FiveOrbs\Cli\Tests\Fixtures\BarStuff;
-use FiveOrbs\Cli\Tests\Fixtures\Erring;
-use FiveOrbs\Cli\Tests\Fixtures\FooDrivel;
-use FiveOrbs\Cli\Tests\Fixtures\FooStuff;
+use Duon\Cli\Runner;
+use Duon\Cli\Commands;
+use Duon\Cli\Tests\Fixtures\BarStuff;
+use Duon\Cli\Tests\Fixtures\Erring;
+use Duon\Cli\Tests\Fixtures\FooDrivel;
+use Duon\Cli\Tests\Fixtures\FooStuff;
 
 $runner = new Runner(new Commands([
     new BarStuff(),
@@ -21,4 +21,3 @@ $runner = new Runner(new Commands([
 exit($runner->run());
 
 // vim: ft=php
-

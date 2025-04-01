@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace FiveOrbs\Cli;
+namespace Duon\Cli;
 
 class Output
 {

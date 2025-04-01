@@ -1,12 +1,12 @@
-site_name: FiveOrbs Cli
+site_name: Duon Cli
 copyright: © 2022 ebene fünf GmbH
 nav:
   - index.md
 theme:
-    name: fiveorbs
+    name: duon
 repo_url: https://github.com/fiveorb/cli
 extra:
-    project: FiveOrbs Cli
+    project: Duon Cli
 plugins:
     - search
     - macros:

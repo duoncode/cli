@@ -1,7 +1,7 @@
 ---
 title: Introduction
 ---
-FiveOrbs Cli
+Duon Cli
 =========
 
 A command line interface helper like [Laravel's Artisan](https://laravel.com/docs/9.x/artisan) 
@@ -9,14 +9,14 @@ with way less magic.
 
 ## Installation
 
-    composer require fiveorbs/cli
+    composer require duon/cli
 
 ## Quick Start
 
 Create a Command:
 
 ```php
-use FiveOrbs\Cli\Command;
+use Duon\Cli\Command;
 
 class MyCommand extends Command {
     /**
@@ -74,7 +74,7 @@ Create a runner script, e. g. `run.php` or simply `run`:
 
 require __DIR__ . '/vendor/autoload.php';
 
-use FiveOrbs\Cli\{Runner, Commands};
+use Duon\Cli\{Runner, Commands};
 use MyCommand;
 
 $commands = new Commands([new MyCommand()]);

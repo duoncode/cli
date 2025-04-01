@@ -1,37 +1,37 @@
 {
-	"name": "fiveorbs/cli",
-	"description": "FiveOrbs cli tools/runner",
+	"name": "duon/cli",
+	"description": "Duon cli tools/runner",
 	"type": "library",
 	"license": "MIT",
 	"authors": [
 		{
 			"name": "ebene fünf GmbH",
-			"email": "fiveorbs@ebenefuenf.de",
+			"email": "duon@ebenefuenf.de",
 			"role": "Developer"
 		}
 	],
-	"homepage": "https://fiveorbs.dev/boiler",
+	"homepage": "https://duon.dev/boiler",
 	"keywords": [
-		"fiveorbs",
+		"duon",
 		"cli"
 	],
 	"autoload": {
 		"psr-4": {
-			"FiveOrbs\\Cli\\": "src/"
+			"Duon\\Cli\\": "src/"
 		}
 	},
 	"autoload-dev": {
 		"psr-4": {
-			"FiveOrbs\\Cli\\Tests\\": "tests"
+			"Duon\\Cli\\Tests\\": "tests"
 		}
 	},
 	"require": {
 		"php": ">=8.1"
 	},
 	"require-dev": {
-		"fiveorbs/dev": "^1.1",
+		"duon/dev": "^1.1",
 		"pestphp/pest": "^1",
-		"vimeo/psalm": "^5",
+		"vimeo/psalm": "^6.10",
 		"dealerdirect/phpcodesniffer-composer-installer": "^1",
 		"staabm/annotate-pull-request-from-checkstyle": "^1"
 	},

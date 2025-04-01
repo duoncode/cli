@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-use FiveOrbs\Cli\Opts;
+use Duon\Cli\Opts;
 
 beforeEach(function () {
 	$_SERVER['argv'] = [
