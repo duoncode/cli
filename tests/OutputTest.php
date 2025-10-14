@@ -27,6 +27,7 @@ test('Foreground colors', function () {
 	expect($output->color('test', 'lightgray'))->toBe("\033[0;37mtest\033[0m");
 	expect($output->color('test', 'lightgrey'))->toBe("\033[0;37mtest\033[0m");
 	expect($output->color('test', 'white'))->toBe("\033[1;37mtest\033[0m");
+	expect($output->color('test'))->toBe("test");
 });
 
 test('Has color support', function () {
@@ -51,6 +52,18 @@ test('Background colors', function () {
 	expect($output->color('test', 'white', 'white'))->toBe("\033[1;37;47mtest\033[0m");
 	expect($output->color('test', 'white', 'gray'))->toBe("\033[1;37;47mtest\033[0m");
 	expect($output->color('test', 'white', 'grey'))->toBe("\033[1;37;47mtest\033[0m");
+
+	expect($output->color('test', background: 'black'))->toBe("\033[40mtest\033[0m");
+	expect($output->color('test', background: 'red'))->toBe("\033[41mtest\033[0m");
+	expect($output->color('test', background: 'green'))->toBe("\033[42mtest\033[0m");
+	expect($output->color('test', background: 'yellow'))->toBe("\033[43mtest\033[0m");
+	expect($output->color('test', background: 'blue'))->toBe("\033[44mtest\033[0m");
+	expect($output->color('test', background: 'purple'))->toBe("\033[45mtest\033[0m");
+	expect($output->color('test', background: 'magenta'))->toBe("\033[45mtest\033[0m");
+	expect($output->color('test', background: 'cyan'))->toBe("\033[46mtest\033[0m");
+	expect($output->color('test', background: 'white'))->toBe("\033[47mtest\033[0m");
+	expect($output->color('test', background: 'gray'))->toBe("\033[47mtest\033[0m");
+	expect($output->color('test', background: 'grey'))->toBe("\033[47mtest\033[0m");
 });
 
 test('Indent', function () {

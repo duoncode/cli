@@ -51,21 +51,25 @@ class Output
 		fflush($this->stream);
 	}
 
-	public function color(string $text, string $color, ?string $background = null): string
+	public function color(string $text, string $color = '', string $background = ''): string
 	{
 		if (!$this->hasColorSupport()) {
 			return $text;
 		}
 
-		[$first, $second] = $this->fg[$color];
+		$colorCode = '';
+		$backgroundCode = '';
 
-		if ($background) {
-			$bg = $this->bg[$background];
-
-			return "\033[{$first};{$second};{$bg}m{$text}\033[0m";
+		if ($color && array_key_exists($color, $this->fg)) {
+			[$first, $second] = $this->fg[$color];
+			$colorCode = "{$first};{$second}";
 		}
 
-		return "\033[{$first};{$second}m{$text}\033[0m";
+		if ($background && array_key_exists($background, $this->bg)) {
+			$backgroundCode = $this->bg[$background];
+		}
+
+		return $this->formatText($text, $colorCode, $backgroundCode);
 	}
 
 	public function indent(
@@ -96,6 +100,23 @@ class Output
 		return implode("\n", array_map(function ($line) use ($spaces) {
 			return $spaces . $line;
 		}, $lines));
+	}
+
+	protected function formatText(string $text, string $colorCode, $backgroundCode): string
+	{
+		if ($colorCode && $backgroundCode) {
+			return "\033[{$colorCode};{$backgroundCode}m{$text}\033[0m";
+		}
+
+		if ($colorCode) {
+			return "\033[{$colorCode}m{$text}\033[0m";
+		}
+
+		if ($backgroundCode) {
+			return "\033[{$backgroundCode}m{$text}\033[0m";
+		}
+
+		return $text;
 	}
 
 	protected function getStream(): mixed

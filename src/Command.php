@@ -59,7 +59,7 @@ abstract class Command
 		throw new RuntimeException('Output missing');
 	}
 
-	public function color(string $text, string $color, string $background = null): string
+	public function color(string $text, string $color, string $background = ''): string
 	{
 		if ($this->output) {
 			return $this->output->color($text, $color, $background);
