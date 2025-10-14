@@ -51,8 +51,12 @@ class Output
 		fflush($this->stream);
 	}
 
-	public function color(string $text, string $color, string $background = null): string
+	public function color(string $text, string $color, ?string $background = null): string
 	{
+		if (!$this->hasColor()) {
+			return $text;
+		}
+
 		[$first, $second] = $this->fg[$color];
 
 		if ($background) {
@@ -101,5 +105,33 @@ class Output
 		}
 
 		return $this->stream;
+	}
+
+	protected function hasColor(): bool
+	{
+		if (getenv('NO_COLOR') !== false) {
+			return false;
+		}
+
+		if (getenv('FORCE_COLOR') !== false || getenv('COLORTERM') !== false) {
+			return true;
+		}
+
+		// Windows
+		if (DIRECTORY_SEPARATOR === '\\') {
+			if (function_exists('sapi_windows_vt100_support')) {
+				return sapi_windows_vt100_support(STDOUT);
+			}
+
+			return getenv('ANSICON') !== false
+				|| getenv('ConEmuANSI') === 'ON'
+				|| getenv('TERM') === 'xterm';
+		}
+
+		if (function_exists('stream_isatty')) {
+			return stream_isatty(STDOUT);
+		}
+
+		return false;
 	}
 }
