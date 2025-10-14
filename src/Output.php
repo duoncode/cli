@@ -53,7 +53,7 @@ class Output
 
 	public function color(string $text, string $color, ?string $background = null): string
 	{
-		if (!$this->hasColor()) {
+		if (!$this->hasColorSupport()) {
 			return $text;
 		}
 
@@ -107,12 +107,13 @@ class Output
 		return $this->stream;
 	}
 
-	protected function hasColor(): bool
+	protected function hasColorSupport(): bool
 	{
 		if (getenv('NO_COLOR') !== false) {
 			return false;
 		}
 
+		// @codeCoverageIgnoreStart
 		if (getenv('FORCE_COLOR') !== false || getenv('COLORTERM') !== false) {
 			return true;
 		}
@@ -133,5 +134,6 @@ class Output
 		}
 
 		return false;
+		// @codeCoverageIgnoreEnd
 	}
 }

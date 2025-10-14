@@ -29,6 +29,14 @@ test('Foreground colors', function () {
 	expect($output->color('test', 'white'))->toBe("\033[1;37mtest\033[0m");
 });
 
+test('Has color support', function () {
+	$output = new Output('php://output');
+	expect($output->color('test', 'red'))->toBe("\033[0;31mtest\033[0m");
+	putenv('NO_COLOR=1');
+	expect($output->color('test', 'red'))->toBe('test');
+	putenv('NO_COLOR');
+});
+
 test('Background colors', function () {
 	$output = new Output('php://output');
 
