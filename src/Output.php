@@ -45,9 +45,19 @@ class Output
 
 	public function __construct(protected readonly string $target) {}
 
-	public function echo(string $message): void
+	public function echo(string $text, string $color = '', string $background = ''): void
 	{
-		fwrite($this->getStream(), $message);
+		$this->write($color || $background ? $this->color($text, $color, $background) : $text);
+	}
+
+	public function echoln(string $text, string $color = '', string $background = ''): void
+	{
+		$this->write(($color || $background ? $this->color($text, $color, $background) : $text) . PHP_EOL);
+	}
+
+	protected function write(string $text): void
+	{
+		fwrite($this->getStream(), $text);
 		fflush($this->stream);
 	}
 

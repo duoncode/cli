@@ -28,6 +28,11 @@ test('Echo fails', function () {
 	$foo->echo('error');
 })->throws(RuntimeException::class, 'Output missing');
 
+test('Echo line fails', function () {
+	$foo = new FooStuff();
+	$foo->echoln('error');
+})->throws(RuntimeException::class, 'Output missing');
+
 test('Color fails', function () {
 	$foo = new FooStuff();
 	$foo->color('error', '#ffffff');

@@ -48,10 +48,21 @@ abstract class Command
 		return $this;
 	}
 
-	public function echo(string $message): void
+	public function echo(string $message, string $color = '', string $background = ''): void
 	{
 		if ($this->output) {
-			$this->output->echo($message);
+			$this->output->echo($message, $color, $background);
+
+			return;
+		}
+
+		throw new RuntimeException('Output missing');
+	}
+
+	public function echoln(string $message, string $color = '', string $background = ''): void
+	{
+		if ($this->output) {
+			$this->output->echoln($message, $color, $background);
 
 			return;
 		}
@@ -101,7 +112,7 @@ abstract class Command
 
 		if ($withOptions) {
 			$this->echo("{$usage} [options]\n\n");
-			$this->echo($this->color('Options:', 'brown') . "\n");
+			$this->echoln($this->color('Options:', 'brown'));
 		} else {
 			$this->echo("{$usage}\n");
 		}

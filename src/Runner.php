@@ -152,7 +152,7 @@ class Runner
 					throw $e;
 				}
 
-				echo "Command not found.\n";
+				$this->output->echoln("Command not found");
 
 				return 1;
 			}
@@ -181,7 +181,7 @@ class Runner
 		// The added magic number takes colorization into
 		// account as it lengthens the string.
 		$prefixedName = str_pad($prefix . $name, $this->longestName + 13);
-		$this->output->echo("  {$prefixedName}{$desc}\n");
+		$this->output->echoln("  {$prefixedName}{$desc}");
 	}
 
 	protected function showAmbiguousMessage(string $cmd): int
@@ -192,7 +192,7 @@ class Runner
 		foreach ($this->list[$cmd] as $command) {
 			$prefix = $this->output->color($command->prefix(), 'brown');
 			$name = strtolower($command->name());
-			$this->output->echo("  {$prefix}:{$name}\n");
+			$this->output->echoln("  {$prefix}:{$name}");
 		}
 
 		return 1;
