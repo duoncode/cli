@@ -70,6 +70,26 @@ abstract class Command
 		throw new RuntimeException('Output missing');
 	}
 
+	public function info(string $message): void
+	{
+		$this->echoln($message);
+	}
+
+	public function success(string $message): void
+	{
+		$this->echoln($message, 'green');
+	}
+
+	public function warn(string $message): void
+	{
+		$this->echoln($message, 'yellow');
+	}
+
+	public function error(string $message): void
+	{
+		$this->echoln($message, 'red');
+	}
+
 	public function color(string $text, string $color, string $background = ''): string
 	{
 		if ($this->output) {
