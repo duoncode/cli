@@ -42,3 +42,51 @@ test('Indent fails', function () {
 	$foo = new FooStuff();
 	$foo->indent('error', 1);
 })->throws(RuntimeException::class, 'Output missing');
+
+test('Info method', function () {
+	$foo = new FooStuff();
+	$output = new Duon\Cli\Output('php://output');
+	$foo->output($output);
+
+	ob_start();
+	$foo->info('Information message');
+	$result = ob_get_clean();
+
+	expect($result)->toBe("Information message\n");
+});
+
+test('Success method', function () {
+	$foo = new FooStuff();
+	$output = new Duon\Cli\Output('php://output');
+	$foo->output($output);
+
+	ob_start();
+	$foo->success('Success message');
+	$result = ob_get_clean();
+
+	expect($result)->toContain('Success message');
+});
+
+test('Warn method', function () {
+	$foo = new FooStuff();
+	$output = new Duon\Cli\Output('php://output');
+	$foo->output($output);
+
+	ob_start();
+	$foo->warn('Warning message');
+	$result = ob_get_clean();
+
+	expect($result)->toContain('Warning message');
+});
+
+test('Error method', function () {
+	$foo = new FooStuff();
+	$output = new Duon\Cli\Output('php://output');
+	$foo->output($output);
+
+	ob_start();
+	$foo->error('Error message');
+	$result = ob_get_clean();
+
+	expect($result)->toContain('Error message');
+});
