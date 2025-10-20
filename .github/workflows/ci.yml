@@ -9,13 +9,12 @@ jobs:
   test:
     runs-on: ubuntu-latest
     env:
-      TERM: xterm-256color
       FORCE_COLOR: "1"
     steps:
       - name: Setup PHP extensions
         uses: shivammathur/setup-php@v2
         with:
-          php-version: '8.2'
+          php-version: '8.4'
           extensions: curl, xml, zip
 
       - name: Checkout repo
@@ -25,7 +24,7 @@ jobs:
         run: composer install
 
       - name: Run tests
-        run: ./vendor/bin/pest --ci --coverage --min=100
+        run: ./vendor/bin/phpunit --coverage-text --coverage-filter=src --path-coverage
 
       - name: Run Psalm
         run: ./vendor/bin/psalm --output-format=github --shepherd

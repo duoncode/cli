@@ -2,94 +2,107 @@
 
 declare(strict_types=1);
 
+namespace Duon\Cli\Tests;
+
 use Duon\Cli\Commands;
 use Duon\Cli\Tests\Fixtures\BarStuff;
 use Duon\Cli\Tests\Fixtures\Erring;
 use Duon\Cli\Tests\Fixtures\FooDrivel;
 use Duon\Cli\Tests\Fixtures\FooStuff;
 
-test('Init empty then add one Command', function () {
-	$commands = new Commands();
-	$foo = new FooStuff();
-	$commands->add($foo);
+class CommandsTest extends TestCase
+{
+	public function testInitEmptyThenAddOneCommand(): void
+	{
+		$commands = new Commands();
+		$foo = new FooStuff();
+		$commands->add($foo);
 
-	expect($commands->get()[0])->toBe($foo);
-});
+		$this->assertSame($foo, $commands->get()[0]);
+	}
 
-test('Init with one Command', function () {
-	$foo = new FooStuff();
-	$commands = new Commands($foo);
+	public function testInitWithOneCommand(): void
+	{
+		$foo = new FooStuff();
+		$commands = new Commands($foo);
 
-	expect($commands->get()[0])->toBe($foo);
-});
+		$this->assertSame($foo, $commands->get()[0]);
+	}
 
-test('Init with one Command then add another Command', function () {
-	$foo = new FooStuff();
-	$commands = new Commands($foo);
-	$bar = new BarStuff();
-	$commands->add($bar);
+	public function testInitWithOneCommandThenAddAnotherCommand(): void
+	{
+		$foo = new FooStuff();
+		$commands = new Commands($foo);
+		$bar = new BarStuff();
+		$commands->add($bar);
 
-	expect($commands->get()[0])->toBe($foo);
-	expect($commands->get()[1])->toBe($bar);
-});
+		$this->assertSame($foo, $commands->get()[0]);
+		$this->assertSame($bar, $commands->get()[1]);
+	}
 
-test('Init with array', function () {
-	$foo = new FooStuff();
-	$bar = new BarStuff();
-	$commands = new Commands([$foo, $bar]);
+	public function testInitWithArray(): void
+	{
+		$foo = new FooStuff();
+		$bar = new BarStuff();
+		$commands = new Commands([$foo, $bar]);
 
-	expect($commands->get()[0])->toBe($foo);
-	expect($commands->get()[1])->toBe($bar);
-});
+		$this->assertSame($foo, $commands->get()[0]);
+		$this->assertSame($bar, $commands->get()[1]);
+	}
 
-test('Init with array then add another Command', function () {
-	$foo = new FooStuff();
-	$bar = new BarStuff();
-	$commands = new Commands([$foo, $bar]);
-	$drivel = new FooDrivel();
-	$commands->add($drivel);
+	public function testInitWithArrayThenAddAnotherCommand(): void
+	{
+		$foo = new FooStuff();
+		$bar = new BarStuff();
+		$commands = new Commands([$foo, $bar]);
+		$drivel = new FooDrivel();
+		$commands->add($drivel);
 
-	expect($commands->get()[0])->toBe($foo);
-	expect($commands->get()[1])->toBe($bar);
-	expect($commands->get()[2])->toBe($drivel);
-});
+		$this->assertSame($foo, $commands->get()[0]);
+		$this->assertSame($bar, $commands->get()[1]);
+		$this->assertSame($drivel, $commands->get()[2]);
+	}
 
-test('Init with array then add another array', function () {
-	$foo = new FooStuff();
-	$bar = new BarStuff();
-	$commands = new Commands([$foo, $bar]);
-	$drivel = new FooDrivel();
-	$err = new Erring();
-	$commands->add([$drivel, $err]);
+	public function testInitWithArrayThenAddAnotherArray(): void
+	{
+		$foo = new FooStuff();
+		$bar = new BarStuff();
+		$commands = new Commands([$foo, $bar]);
+		$drivel = new FooDrivel();
+		$err = new Erring();
+		$commands->add([$drivel, $err]);
 
-	expect($commands->get()[0])->toBe($foo);
-	expect($commands->get()[1])->toBe($bar);
-	expect($commands->get()[2])->toBe($drivel);
-	expect($commands->get()[3])->toBe($err);
-});
+		$this->assertSame($foo, $commands->get()[0]);
+		$this->assertSame($bar, $commands->get()[1]);
+		$this->assertSame($drivel, $commands->get()[2]);
+		$this->assertSame($err, $commands->get()[3]);
+	}
 
-test('Init with one Command then add Commands', function () {
-	$foo = new FooStuff();
-	$commands = new Commands($foo);
-	$drivel = new FooDrivel();
-	$err = new Erring();
-	$commands->add(new Commands([$drivel, $err]));
+	public function testInitWithOneCommandThenAddCommands(): void
+	{
+		$foo = new FooStuff();
+		$commands = new Commands($foo);
+		$drivel = new FooDrivel();
+		$err = new Erring();
+		$commands->add(new Commands([$drivel, $err]));
 
-	expect($commands->get()[0])->toBe($foo);
-	expect($commands->get()[1])->toBe($drivel);
-	expect($commands->get()[2])->toBe($err);
-});
+		$this->assertSame($foo, $commands->get()[0]);
+		$this->assertSame($drivel, $commands->get()[1]);
+		$this->assertSame($err, $commands->get()[2]);
+	}
 
-test('Init with array then add Commands', function () {
-	$foo = new FooStuff();
-	$bar = new BarStuff();
-	$commands = new Commands([$foo, $bar]);
-	$drivel = new FooDrivel();
-	$err = new Erring();
-	$commands->add(new Commands([$drivel, $err]));
+	public function testInitWithArrayThenAddCommands(): void
+	{
+		$foo = new FooStuff();
+		$bar = new BarStuff();
+		$commands = new Commands([$foo, $bar]);
+		$drivel = new FooDrivel();
+		$err = new Erring();
+		$commands->add(new Commands([$drivel, $err]));
 
-	expect($commands->get()[0])->toBe($foo);
-	expect($commands->get()[1])->toBe($bar);
-	expect($commands->get()[2])->toBe($drivel);
-	expect($commands->get()[3])->toBe($err);
-});
+		$this->assertSame($foo, $commands->get()[0]);
+		$this->assertSame($bar, $commands->get()[1]);
+		$this->assertSame($drivel, $commands->get()[2]);
+		$this->assertSame($err, $commands->get()[3]);
+	}
+}

@@ -2,99 +2,125 @@
 
 declare(strict_types=1);
 
+namespace Duon\Cli\Tests;
+
 use Duon\Cli\Opts;
+use ValueError;
 
-beforeEach(function () {
-	$_SERVER['argv'] = [
-		'run',
-		'migrations',
-		'--list',
-		'1',
-		'chuck',
-		'-h',
-		'--conn',
-		'sqlite',
-		'--novalues',
-	];
-});
+class OptsTest extends TestCase
+{
+	protected function setUp(): void
+	{
+		parent::setUp();
 
-test('Has option', function () {
-	$opts = new Opts();
+		$_SERVER['argv'] = [
+			'run',
+			'migrations',
+			'--list',
+			'1',
+			'chuck',
+			'-h',
+			'--conn',
+			'sqlite',
+			'--novalues',
+		];
+	}
 
-	expect($opts->has('run'))->toBe(false);
-	expect($opts->has('migrations'))->toBe(false);
-	expect($opts->has('-h'))->toBe(true);
-	expect($opts->has('--conn'))->toBe(true);
-	expect($opts->has('-c', true))->toBe(true);
-	expect($opts->has('-c', $opts->has('--conn')))->toBe(true);
-});
+	public function testHasOption(): void
+	{
+		$opts = new Opts();
 
-test('Get value', function () {
-	$opts = new Opts();
+		$this->assertFalse($opts->has('run'));
+		$this->assertFalse($opts->has('migrations'));
+		$this->assertTrue($opts->has('-h'));
+		$this->assertTrue($opts->has('--conn'));
+		$this->assertTrue($opts->has('-c', true));
+		$this->assertTrue($opts->has('-c', $opts->has('--conn')));
+	}
 
-	expect($opts->get('--conn'))->toBe('sqlite');
-	expect($opts->get('--conn', 'pgsql'))->toBe('sqlite');
-	expect($opts->get('-h', 'default'))->toBe('default');
-	expect($opts->get('-?', 'default'))->toBe('default');
-});
+	public function testGetValue(): void
+	{
+		$opts = new Opts();
 
-test('Get values', function () {
-	$opts = new Opts();
+		$this->assertSame('sqlite', $opts->get('--conn'));
+		$this->assertSame('sqlite', $opts->get('--conn', 'pgsql'));
+		$this->assertSame('default', $opts->get('-h', 'default'));
+		$this->assertSame('default', $opts->get('-?', 'default'));
+	}
 
-	expect($opts->all('--list'))->toBe(['1', 'chuck']);
-	expect($opts->all('--list', ['2']))->toBe(['1', 'chuck']);
-	expect($opts->all('--conn'))->toBe(['sqlite']);
-	expect($opts->all('--novalues', ['1', '2']))->toBe(['1', '2']);
-	expect($opts->all('--missing', ['1', '2']))->toBe(['1', '2']);
-});
+	public function testGetValues(): void
+	{
+		$opts = new Opts();
 
-test('Try to get value from missing option', function () {
-	$opts = new Opts();
+		$this->assertSame(['1', 'chuck'], $opts->all('--list'));
+		$this->assertSame(['1', 'chuck'], $opts->all('--list', ['2']));
+		$this->assertSame(['sqlite'], $opts->all('--conn'));
+		$this->assertSame(['1', '2'], $opts->all('--novalues', ['1', '2']));
+		$this->assertSame(['1', '2'], $opts->all('--missing', ['1', '2']));
+	}
 
-	$opts->get('-?');
-})->throws(ValueError::class, 'Unknown option: -?');
+	public function testTryToGetValueFromMissingOption(): void
+	{
+		$opts = new Opts();
 
-test('Try to get values from missing option', function () {
-	$opts = new Opts();
+		$this->expectException(ValueError::class);
+		$this->expectExceptionMessage('Unknown option: -?');
+		$opts->get('-?');
+	}
 
-	$opts->all('--missing');
-})->throws(ValueError::class, 'Unknown option: --missing');
+	public function testTryToGetValuesFromMissingOption(): void
+	{
+		$opts = new Opts();
 
-test('Try to get missing value', function () {
-	$opts = new Opts();
+		$this->expectException(ValueError::class);
+		$this->expectExceptionMessage('Unknown option: --missing');
+		$opts->all('--missing');
+	}
 
-	$opts->get('-h');
-})->throws(ValueError::class, 'No value given for -h');
+	public function testTryToGetMissingValue(): void
+	{
+		$opts = new Opts();
 
-test('Try to get missing values', function () {
-	$opts = new Opts();
+		$this->expectException(ValueError::class);
+		$this->expectExceptionMessage('No value given for -h');
+		$opts->get('-h');
+	}
 
-	$opts->all('--novalues');
-})->throws(ValueError::class, 'No value given for --novalues');
+	public function testTryToGetMissingValues(): void
+	{
+		$opts = new Opts();
 
-test('Get value with = syntax', function () {
-	$_SERVER['argv'] = [
-		'run',
-		'--config=production',
-		'--host=localhost:3306',
-		'--data=key=value',
-	];
+		$this->expectException(ValueError::class);
+		$this->expectExceptionMessage('No value given for --novalues');
+		$opts->all('--novalues');
+	}
 
-	$opts = new Opts();
+	public function testGetValueWithEqualsSyntax(): void
+	{
+		$_SERVER['argv'] = [
+			'run',
+			'--config=production',
+			'--host=localhost:3306',
+			'--data=key=value',
+		];
 
-	expect($opts->get('--config'))->toBe('production');
-	expect($opts->get('--host'))->toBe('localhost:3306');
-	expect($opts->get('--data'))->toBe('key=value');
-});
+		$opts = new Opts();
 
-test('Set multiple values with = syntax', function () {
-	$_SERVER['argv'] = [
-		'run',
-		'--config=production',
-		'--config=staging',
-	];
+		$this->assertSame('production', $opts->get('--config'));
+		$this->assertSame('localhost:3306', $opts->get('--host'));
+		$this->assertSame('key=value', $opts->get('--data'));
+	}
 
-	$opts = new Opts();
+	public function testSetMultipleValuesWithEqualsSyntax(): void
+	{
+		$_SERVER['argv'] = [
+			'run',
+			'--config=production',
+			'--config=staging',
+		];
 
-	expect($opts->all('--config'))->toBe(['production', 'staging']);
-});
+		$opts = new Opts();
+
+		$this->assertSame(['production', 'staging'], $opts->all('--config'));
+	}
+}

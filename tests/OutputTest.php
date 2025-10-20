@@ -2,79 +2,88 @@
 
 declare(strict_types=1);
 
+namespace Duon\Cli\Tests;
+
 use Duon\Cli\Output;
 
-test('Foreground colors', function () {
-	$output = new Output('php://output');
+class OutputTest extends TestCase
+{
+	public function testForegroundColors(): void
+	{
+		$output = new Output('php://output');
 
-	expect($output->color('test', 'black'))->toBe("\033[0;30mtest\033[0m");
-	expect($output->color('test', 'gray'))->toBe("\033[1;30mtest\033[0m");
-	expect($output->color('test', 'grey'))->toBe("\033[1;30mtest\033[0m");
-	expect($output->color('test', 'red'))->toBe("\033[0;31mtest\033[0m");
-	expect($output->color('test', 'lightred'))->toBe("\033[1;31mtest\033[0m");
-	expect($output->color('test', 'green'))->toBe("\033[0;32mtest\033[0m");
-	expect($output->color('test', 'lightgreen'))->toBe("\033[1;32mtest\033[0m");
-	expect($output->color('test', 'brown'))->toBe("\033[0;33mtest\033[0m");
-	expect($output->color('test', 'yellow'))->toBe("\033[1;33mtest\033[0m");
-	expect($output->color('test', 'blue'))->toBe("\033[0;34mtest\033[0m");
-	expect($output->color('test', 'lightblue'))->toBe("\033[1;34mtest\033[0m");
-	expect($output->color('test', 'magenta'))->toBe("\033[0;35mtest\033[0m");
-	expect($output->color('test', 'lightmagenta'))->toBe("\033[1;35mtest\033[0m");
-	expect($output->color('test', 'purple'))->toBe("\033[0;35mtest\033[0m");
-	expect($output->color('test', 'lightpurple'))->toBe("\033[1;35mtest\033[0m");
-	expect($output->color('test', 'cyan'))->toBe("\033[0;36mtest\033[0m");
-	expect($output->color('test', 'lightcyan'))->toBe("\033[1;36mtest\033[0m");
-	expect($output->color('test', 'lightgray'))->toBe("\033[0;37mtest\033[0m");
-	expect($output->color('test', 'lightgrey'))->toBe("\033[0;37mtest\033[0m");
-	expect($output->color('test', 'white'))->toBe("\033[1;37mtest\033[0m");
-	expect($output->color('test'))->toBe("test");
-});
+		$this->assertSame("\033[0;30mtest\033[0m", $output->color('test', 'black'));
+		$this->assertSame("\033[1;30mtest\033[0m", $output->color('test', 'gray'));
+		$this->assertSame("\033[1;30mtest\033[0m", $output->color('test', 'grey'));
+		$this->assertSame("\033[0;31mtest\033[0m", $output->color('test', 'red'));
+		$this->assertSame("\033[1;31mtest\033[0m", $output->color('test', 'lightred'));
+		$this->assertSame("\033[0;32mtest\033[0m", $output->color('test', 'green'));
+		$this->assertSame("\033[1;32mtest\033[0m", $output->color('test', 'lightgreen'));
+		$this->assertSame("\033[0;33mtest\033[0m", $output->color('test', 'brown'));
+		$this->assertSame("\033[1;33mtest\033[0m", $output->color('test', 'yellow'));
+		$this->assertSame("\033[0;34mtest\033[0m", $output->color('test', 'blue'));
+		$this->assertSame("\033[1;34mtest\033[0m", $output->color('test', 'lightblue'));
+		$this->assertSame("\033[0;35mtest\033[0m", $output->color('test', 'magenta'));
+		$this->assertSame("\033[1;35mtest\033[0m", $output->color('test', 'lightmagenta'));
+		$this->assertSame("\033[0;35mtest\033[0m", $output->color('test', 'purple'));
+		$this->assertSame("\033[1;35mtest\033[0m", $output->color('test', 'lightpurple'));
+		$this->assertSame("\033[0;36mtest\033[0m", $output->color('test', 'cyan'));
+		$this->assertSame("\033[1;36mtest\033[0m", $output->color('test', 'lightcyan'));
+		$this->assertSame("\033[0;37mtest\033[0m", $output->color('test', 'lightgray'));
+		$this->assertSame("\033[0;37mtest\033[0m", $output->color('test', 'lightgrey'));
+		$this->assertSame("\033[1;37mtest\033[0m", $output->color('test', 'white'));
+		$this->assertSame('test', $output->color('test'));
+	}
 
-test('Has color support', function () {
-	$output = new Output('php://output');
-	expect($output->color('test', 'red'))->toBe("\033[0;31mtest\033[0m");
-	putenv('NO_COLOR=1');
-	expect($output->color('test', 'red'))->toBe('test');
-	putenv('NO_COLOR');
-});
+	public function testHasColorSupport(): void
+	{
+		$output = new Output('php://output');
+		$this->assertSame("\033[0;31mtest\033[0m", $output->color('test', 'red'));
+		putenv('NO_COLOR=1');
+		$this->assertSame('test', $output->color('test', 'red'));
+		putenv('NO_COLOR');
+	}
 
-test('Background colors', function () {
-	$output = new Output('php://output');
+	public function testBackgroundColors(): void
+	{
+		$output = new Output('php://output');
 
-	expect($output->color('test', 'lightgrey', 'black'))->toBe("\033[0;37;40mtest\033[0m");
-	expect($output->color('test', 'white', 'red'))->toBe("\033[1;37;41mtest\033[0m");
-	expect($output->color('test', 'lightgreen', 'green'))->toBe("\033[1;32;42mtest\033[0m");
-	expect($output->color('test', 'yellow', 'yellow'))->toBe("\033[1;33;43mtest\033[0m");
-	expect($output->color('test', 'blue', 'blue'))->toBe("\033[0;34;44mtest\033[0m");
-	expect($output->color('test', 'lightpurple', 'purple'))->toBe("\033[1;35;45mtest\033[0m");
-	expect($output->color('test', 'purple', 'magenta'))->toBe("\033[0;35;45mtest\033[0m");
-	expect($output->color('test', 'cyan', 'cyan'))->toBe("\033[0;36;46mtest\033[0m");
-	expect($output->color('test', 'white', 'white'))->toBe("\033[1;37;47mtest\033[0m");
-	expect($output->color('test', 'white', 'gray'))->toBe("\033[1;37;47mtest\033[0m");
-	expect($output->color('test', 'white', 'grey'))->toBe("\033[1;37;47mtest\033[0m");
+		$this->assertSame("\033[0;37;40mtest\033[0m", $output->color('test', 'lightgrey', 'black'));
+		$this->assertSame("\033[1;37;41mtest\033[0m", $output->color('test', 'white', 'red'));
+		$this->assertSame("\033[1;32;42mtest\033[0m", $output->color('test', 'lightgreen', 'green'));
+		$this->assertSame("\033[1;33;43mtest\033[0m", $output->color('test', 'yellow', 'yellow'));
+		$this->assertSame("\033[0;34;44mtest\033[0m", $output->color('test', 'blue', 'blue'));
+		$this->assertSame("\033[1;35;45mtest\033[0m", $output->color('test', 'lightpurple', 'purple'));
+		$this->assertSame("\033[0;35;45mtest\033[0m", $output->color('test', 'purple', 'magenta'));
+		$this->assertSame("\033[0;36;46mtest\033[0m", $output->color('test', 'cyan', 'cyan'));
+		$this->assertSame("\033[1;37;47mtest\033[0m", $output->color('test', 'white', 'white'));
+		$this->assertSame("\033[1;37;47mtest\033[0m", $output->color('test', 'white', 'gray'));
+		$this->assertSame("\033[1;37;47mtest\033[0m", $output->color('test', 'white', 'grey'));
 
-	expect($output->color('test', background: 'black'))->toBe("\033[40mtest\033[0m");
-	expect($output->color('test', background: 'red'))->toBe("\033[41mtest\033[0m");
-	expect($output->color('test', background: 'green'))->toBe("\033[42mtest\033[0m");
-	expect($output->color('test', background: 'yellow'))->toBe("\033[43mtest\033[0m");
-	expect($output->color('test', background: 'blue'))->toBe("\033[44mtest\033[0m");
-	expect($output->color('test', background: 'purple'))->toBe("\033[45mtest\033[0m");
-	expect($output->color('test', background: 'magenta'))->toBe("\033[45mtest\033[0m");
-	expect($output->color('test', background: 'cyan'))->toBe("\033[46mtest\033[0m");
-	expect($output->color('test', background: 'white'))->toBe("\033[47mtest\033[0m");
-	expect($output->color('test', background: 'gray'))->toBe("\033[47mtest\033[0m");
-	expect($output->color('test', background: 'grey'))->toBe("\033[47mtest\033[0m");
-});
+		$this->assertSame("\033[40mtest\033[0m", $output->color('test', background: 'black'));
+		$this->assertSame("\033[41mtest\033[0m", $output->color('test', background: 'red'));
+		$this->assertSame("\033[42mtest\033[0m", $output->color('test', background: 'green'));
+		$this->assertSame("\033[43mtest\033[0m", $output->color('test', background: 'yellow'));
+		$this->assertSame("\033[44mtest\033[0m", $output->color('test', background: 'blue'));
+		$this->assertSame("\033[45mtest\033[0m", $output->color('test', background: 'purple'));
+		$this->assertSame("\033[45mtest\033[0m", $output->color('test', background: 'magenta'));
+		$this->assertSame("\033[46mtest\033[0m", $output->color('test', background: 'cyan'));
+		$this->assertSame("\033[47mtest\033[0m", $output->color('test', background: 'white'));
+		$this->assertSame("\033[47mtest\033[0m", $output->color('test', background: 'gray'));
+		$this->assertSame("\033[47mtest\033[0m", $output->color('test', background: 'grey'));
+	}
 
-test('Indent', function () {
-	$output = new Output('php://output');
-	$lorem = 'Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam ' .
-		'nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, ' .
-		'sed diam voluptua. At vero eos et accusam et justo duo dolores et ea ' .
-		'rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ' .
-		'ipsum dolor sit amet.';
-	$split = explode("\n", $output->indent($lorem, 4, 40));
+	public function testIndent(): void
+	{
+		$output = new Output('php://output');
+		$lorem = 'Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam ' .
+			'nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, ' .
+			'sed diam voluptua. At vero eos et accusam et justo duo dolores et ea ' .
+			'rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ' .
+			'ipsum dolor sit amet.';
+		$split = explode("\n", $output->indent($lorem, 4, 40));
 
-	expect($split[0])->toBe('    Lorem ipsum dolor sit amet, consetetur');
-	expect($split[4])->toBe('    At vero eos et accusam et justo duo');
-});
+		$this->assertSame('    Lorem ipsum dolor sit amet, consetetur', $split[0]);
+		$this->assertSame('    At vero eos et accusam et justo duo', $split[4]);
+	}
+}

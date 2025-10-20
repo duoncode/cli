@@ -2,91 +2,119 @@
 
 declare(strict_types=1);
 
+namespace Duon\Cli\Tests;
+
+use Duon\Cli\Output;
 use Duon\Cli\Tests\Fixtures\Erring;
 use Duon\Cli\Tests\Fixtures\FooStuff;
+use RuntimeException;
 
-test('Command getters', function () {
-	$_SERVER['argv'] = ['run'];
-	$foo = new FooStuff();
+class CommandTest extends TestCase
+{
+	public function testCommandGetters(): void
+	{
+		$_SERVER['argv'] = ['run'];
+		$foo = new FooStuff();
 
-	expect($foo->name())->toBe('stuff');
-	expect($foo->description())->toBe("Prints Foo's stuff to stdout");
-	expect($foo->script())->toBe('run');
+		$this->assertSame('stuff', $foo->name());
+		$this->assertSame("Prints Foo's stuff to stdout", $foo->description());
+		$this->assertSame('run', $foo->script());
 
-	// Implicit prefix
-	expect($foo->group())->toBe('Foo');
-	expect($foo->prefix())->toBe('foo');
+		// Implicit prefix
+		$this->assertSame('Foo', $foo->group());
+		$this->assertSame('foo', $foo->prefix());
 
-	// Explicit prefix
-	$err = new Erring();
-	expect($err->group())->toBe('Errors');
-	expect($err->prefix())->toBe('err');
-});
+		// Explicit prefix
+		$err = new Erring();
+		$this->assertSame('Errors', $err->group());
+		$this->assertSame('err', $err->prefix());
+	}
 
-test('Echo fails', function () {
-	$foo = new FooStuff();
-	$foo->echo('error');
-})->throws(RuntimeException::class, 'Output missing');
+	public function testEchoFails(): void
+	{
+		$foo = new FooStuff();
 
-test('Echo line fails', function () {
-	$foo = new FooStuff();
-	$foo->echoln('error');
-})->throws(RuntimeException::class, 'Output missing');
+		$this->expectException(RuntimeException::class);
+		$this->expectExceptionMessage('Output missing');
+		$foo->echo('error');
+	}
 
-test('Color fails', function () {
-	$foo = new FooStuff();
-	$foo->color('error', '#ffffff');
-})->throws(RuntimeException::class, 'Output missing');
+	public function testEchoLineFails(): void
+	{
+		$foo = new FooStuff();
 
-test('Indent fails', function () {
-	$foo = new FooStuff();
-	$foo->indent('error', 1);
-})->throws(RuntimeException::class, 'Output missing');
+		$this->expectException(RuntimeException::class);
+		$this->expectExceptionMessage('Output missing');
+		$foo->echoln('error');
+	}
 
-test('Info method', function () {
-	$foo = new FooStuff();
-	$output = new Duon\Cli\Output('php://output');
-	$foo->output($output);
+	public function testColorFails(): void
+	{
+		$foo = new FooStuff();
 
-	ob_start();
-	$foo->info('Information message');
-	$result = ob_get_clean();
+		$this->expectException(RuntimeException::class);
+		$this->expectExceptionMessage('Output missing');
+		$foo->color('error', '#ffffff');
+	}
 
-	expect($result)->toBe("Information message\n");
-});
+	public function testIndentFails(): void
+	{
+		$foo = new FooStuff();
 
-test('Success method', function () {
-	$foo = new FooStuff();
-	$output = new Duon\Cli\Output('php://output');
-	$foo->output($output);
+		$this->expectException(RuntimeException::class);
+		$this->expectExceptionMessage('Output missing');
+		$foo->indent('error', 1);
+	}
 
-	ob_start();
-	$foo->success('Success message');
-	$result = ob_get_clean();
+	public function testInfoMethod(): void
+	{
+		$foo = new FooStuff();
+		$output = new Output('php://output');
+		$foo->output($output);
 
-	expect($result)->toContain('Success message');
-});
+		ob_start();
+		$foo->info('Information message');
+		$result = ob_get_clean();
 
-test('Warn method', function () {
-	$foo = new FooStuff();
-	$output = new Duon\Cli\Output('php://output');
-	$foo->output($output);
+		$this->assertSame("Information message\n", $result);
+	}
 
-	ob_start();
-	$foo->warn('Warning message');
-	$result = ob_get_clean();
+	public function testSuccessMethod(): void
+	{
+		$foo = new FooStuff();
+		$output = new Output('php://output');
+		$foo->output($output);
 
-	expect($result)->toContain('Warning message');
-});
+		ob_start();
+		$foo->success('Success message');
+		$result = ob_get_clean();
 
-test('Error method', function () {
-	$foo = new FooStuff();
-	$output = new Duon\Cli\Output('php://output');
-	$foo->output($output);
+		$this->assertStringContainsString('Success message', $result);
+	}
 
-	ob_start();
-	$foo->error('Error message');
-	$result = ob_get_clean();
+	public function testWarnMethod(): void
+	{
+		$foo = new FooStuff();
+		$output = new Output('php://output');
+		$foo->output($output);
 
-	expect($result)->toContain('Error message');
-});
+		ob_start();
+		$foo->warn('Warning message');
+		$result = ob_get_clean();
+
+		$this->assertStringContainsString('Warning message', $result);
+	}
+
+	public function testErrorMethod(): void
+	{
+		$foo = new FooStuff();
+		$output = new Output('php://output');
+		$foo->output($output);
+
+		ob_start();
+		$foo->error('Error message');
+		$result = ob_get_clean();
+
+		$this->assertStringContainsString('Error message', $result);
+	}
+}

@@ -4,6 +4,7 @@
 .php*.cache
 __pycache__
 composer.lock
+/coverage
 /site
 /tmp
 /vendor

@@ -7,11 +7,6 @@
             <directory suffix="Test.php">tests</directory>
         </testsuite>
     </testsuites>
-    <filter>
-        <whitelist processUncoveredFilesFromWhitelist="true">
-            <directory suffix=".php">src</directory>
-        </whitelist>
-    </filter>
     <coverage processUncoveredFiles="true" pathCoverage="true">
         <include>
             <directory>src</directory>
