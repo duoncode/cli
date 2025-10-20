@@ -4,13 +4,14 @@ declare(strict_types=1);
 
 namespace Duon\Cli;
 
+use PhpParser\NodeVisitor\FirstFindingVisitor;
 use ValueError;
 
 /**
  * PHP's native `getopt` stops after the first "non-option" argument
  * which in our case is the command in `php run <command>`.
  *
- * `-arg`, `--arg` and even `---arg` are treated equally.
+ * `-arg`, `--arg` and even `---arg` are recognized but treated as different flags.
  */
 class Opts
 {
@@ -76,9 +77,18 @@ class Opts
 		foreach ($_SERVER['argv'] ?? [] as $arg) {
 			if (str_starts_with($arg, '-')) {
 				$key = $arg;
+				$value = null;
 
-				if (!isset($opts[$key])) {
-					$opts[$key] = new Opt();
+				if (str_contains($key, '=')) {
+					$parts = explode('=', $key);
+					$key = array_shift($parts);
+					$value = implode('=', $parts);
+				}
+
+				if (isset($opts[$key])) {
+					$opts[$key]->set($value);
+				} else {
+					$opts[$key] = new Opt($value);
 				}
 			} else {
 				if ($key) {

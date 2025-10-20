@@ -8,9 +8,13 @@ class Opt
 {
 	protected array $values;
 
-	public function __construct()
+	public function __construct(?string $value = null)
 	{
-		$this->values = [];
+		if ($value) {
+			$this->values = [$value];
+		} else {
+			$this->values = [];
+		}
 	}
 
 	public function set(string $value): void
@@ -18,9 +22,9 @@ class Opt
 		$this->values[] = $value;
 	}
 
-	public function get(): string
+	public function get(int $index = 0): string
 	{
-		return $this->values[0];
+		return $this->values[$index];
 	}
 
 	public function all(): array
