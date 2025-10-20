@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Duon\Cli;
 
-class Output
+final class Output
 {
 	protected mixed $stream;
 	protected array $fg = [
@@ -112,7 +112,7 @@ class Output
 		}, $lines));
 	}
 
-	protected function formatText(string $text, string $colorCode, $backgroundCode): string
+	protected function formatText(string $text, string $colorCode, string|int $backgroundCode): string
 	{
 		if ($colorCode && $backgroundCode) {
 			return "\033[{$colorCode};{$backgroundCode}m{$text}\033[0m";

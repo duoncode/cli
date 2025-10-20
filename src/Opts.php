@@ -13,7 +13,7 @@ use ValueError;
  *
  * `-arg`, `--arg` and even `---arg` are recognized but treated as different flags.
  */
-class Opts
+final class Opts
 {
 	protected readonly array $opts;
 
@@ -86,12 +86,14 @@ class Opts
 				}
 
 				if (isset($opts[$key])) {
-					$opts[$key]->set($value);
+					if ($value !== null) {
+						$opts[$key]->set($value);
+					}
 				} else {
 					$opts[$key] = new Opt($value);
 				}
 			} else {
-				if ($key) {
+				if ($key !== null) {
 					$opts[$key]->set($arg);
 				}
 			}

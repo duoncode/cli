@@ -4,13 +4,13 @@ declare(strict_types=1);
 
 namespace Duon\Cli;
 
-class Opt
+final class Opt
 {
 	protected array $values;
 
 	public function __construct(?string $value = null)
 	{
-		if ($value) {
+		if ($value !== null) {
 			$this->values = [$value];
 		} else {
 			$this->values = [];

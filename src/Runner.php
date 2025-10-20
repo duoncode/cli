@@ -8,7 +8,7 @@ use BadMethodCallException;
 use Throwable;
 use ValueError;
 
-class Runner
+final class Runner
 {
 	protected const AMBIGUOUS = 1;
 	protected const NOTFOUND = 2;
@@ -151,10 +151,6 @@ class Runner
 
 					throw $e;
 				}
-
-				$this->output->echoln("Command not found");
-
-				return 1;
 			}
 
 			return $this->showHelp();
