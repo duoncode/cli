@@ -12,6 +12,8 @@ use ValueError;
  * which in our case is the command in `php run <command>`.
  *
  * `-arg`, `--arg` and even `---arg` are recognized but treated as different flags.
+ *
+ * @api
  */
 final class Opts
 {

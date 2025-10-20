@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 namespace Duon\Cli;
 
+/**
+ * @api
+ */
 final class Commands
 {
 	protected array $commands = [];

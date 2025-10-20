@@ -8,6 +8,9 @@ use BadMethodCallException;
 use Throwable;
 use ValueError;
 
+/**
+ * @api
+ */
 final class Runner
 {
 	protected const AMBIGUOUS = 1;

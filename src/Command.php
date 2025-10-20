@@ -6,6 +6,9 @@ namespace Duon\Cli;
 
 use RuntimeException;
 
+/**
+ * @api
+ */
 abstract class Command
 {
 	protected string $name = '';
