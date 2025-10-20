@@ -71,3 +71,30 @@ test('Try to get missing values', function () {
 
 	$opts->all('--novalues');
 })->throws(ValueError::class, 'No value given for --novalues');
+
+test('Get value with = syntax', function () {
+	$_SERVER['argv'] = [
+		'run',
+		'--config=production',
+		'--host=localhost:3306',
+		'--data=key=value',
+	];
+
+	$opts = new Opts();
+
+	expect($opts->get('--config'))->toBe('production');
+	expect($opts->get('--host'))->toBe('localhost:3306');
+	expect($opts->get('--data'))->toBe('key=value');
+});
+
+test('Set multiple values with = syntax', function () {
+	$_SERVER['argv'] = [
+		'run',
+		'--config=production',
+		'--config=staging',
+	];
+
+	$opts = new Opts();
+
+	expect($opts->all('--config'))->toBe(['production', 'staging']);
+});
