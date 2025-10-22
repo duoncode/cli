@@ -27,6 +27,7 @@ final class Runner
 	public function __construct(
 		Commands $commands,
 		string $output = 'php://output',
+		private bool $debug = false,
 	) {
 		$this->output = new Output($output);
 		$this->orderCommands($commands);
@@ -161,6 +162,11 @@ final class Runner
 			$this->output->echo("Error while running command '");
 			$this->output->echo($_SERVER['argv'][1] ?? '<no command given>');
 			$this->output->echo("':\n\n" . $e->getMessage() . "\n");
+
+			if ($this->debug) {
+				$this->output->echoln("\nTraceback:", 'yellow');
+				$this->output->echoln($e->getTraceAsString());
+			}
 
 			return 1;
 		}
