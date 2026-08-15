@@ -1,10 +1,10 @@
 # Changelog
 
-## [Unreleased](https://codeberg.org/celema/console/compare/0.5.3...HEAD)
+## [Unreleased](https://codefloe.com/celema/console/compare/0.5.3...HEAD)
 
 No notable changes since the last release.
 
-## [0.5.3](https://codeberg.org/celema/console/src/tag/0.5.3) (2026-07-21)
+## [0.5.3](https://codefloe.com/celema/console/src/tag/0.5.3) (2026-07-21)
 
 ### Added
 
@@ -12,20 +12,20 @@ No notable changes since the last release.
 - `Io::choice()` prompts to pick from a numbered list of options and returns the chosen option; an empty answer yields the default, an invalid one asks again.
 - `Table` renders minimal scc-style column output: columns size to their widest cell's visible width, align per column, and `rule()` inserts separator lines. No borders, no cell wrapping.
 
-## [0.5.2](https://codeberg.org/celema/console/src/tag/0.5.2) (2026-07-21)
+## [0.5.2](https://codefloe.com/celema/console/src/tag/0.5.2) (2026-07-21)
 
 ### Added
 
 - Truecolor hex markup tags with a lowercase six-digit code: `<#ff7313>` and `<bg-#ff7313>`. Such tags previously passed through as unknown text; now they render (and broken pairs throw like any other tag).
 - `Io::rule()` writes a horizontal rule spanning the terminal width, optionally capped by `$max`. The char defaults to `─`, may be a multi-char pattern, and may carry markup — the repeat count uses its visible width, so `$io->rule('<dim>─</dim>')` draws a dim line.
 
-## [0.5.1](https://codeberg.org/celema/console/src/tag/0.5.1) (2026-07-21)
+## [0.5.1](https://codefloe.com/celema/console/src/tag/0.5.1) (2026-07-21)
 
 ### Fixed
 
 - `Io` and `Runner` write to `php://stdout` by default instead of `php://output`. The output-buffer stream never reports a terminal to `stream_isatty()`, so color markup was silently stripped from standard output even in interactive terminals, while stderr stayed colored. Tests capturing output via output buffering can still pass `php://output` explicitly.
 
-## [0.5.0](https://codeberg.org/celema/console/src/tag/0.5.0) (2026-07-20)
+## [0.5.0](https://codefloe.com/celema/console/src/tag/0.5.0) (2026-07-20)
 
 ### Breaking Changes
 
@@ -46,7 +46,7 @@ No notable changes since the last release.
 
 - `#[Arg]` supports `variadic: true` on the last argument: it accepts all remaining positionals — at least one, or any number when also `optional` — and renders as `<name>...` in the help. Declaring a further argument after a variadic one is rejected.
 
-## [0.4.0](https://codeberg.org/celema/console/src/tag/0.4.0) (2026-07-20)
+## [0.4.0](https://codefloe.com/celema/console/src/tag/0.4.0) (2026-07-20)
 
 ### Breaking Changes
 
@@ -88,12 +88,12 @@ No notable changes since the last release.
 - Redirected streams no longer receive ANSI color codes merely because `COLORTERM` is set, and terminal-width detection no longer invokes `tput` for redirected output.
 - An output, error, or input target that cannot be opened now throws a `RuntimeException` naming the target on first use, instead of a `TypeError` on the first write.
 
-## [0.3.0](https://codeberg.org/celema/console/src/tag/0.3.0) (2026-07-18)
+## [0.3.0](https://codefloe.com/celema/console/src/tag/0.3.0) (2026-07-18)
 
 ### Breaking Changes
 
 - Rename the package from `celemas/cli` to `celema/console` and the root namespace from `Celemas\Cli` to `Celema\Console`. Update your `composer require` and every `use Celemas\Cli\...` import.
-- Move the source repository to `codeberg.org/celema/console` and update the project domain and contact email.
+- Move the source repository to the Celema organization and update the project domain and contact email.
 - Commands now receive parsed arguments and must return an exit code: `run(Args $args): int`. `string` returns are gone; use the new `Command::SUCCESS` / `Command::FAILURE` constants and call `exit($runner->run())`.
 - Replaced the `Opts`/`Opt` classes with a single injected `Args` object. Options use `--key=value` (repeatable); a bare `--flag` or `-h` is a boolean flag; every other token is a positional. The previous `--key value` space syntax is no longer supported.
 - `Runner::run()` now returns `int` instead of `int|string`, and its constructor takes an `errorOutput` target before the `debug` flag.
@@ -115,13 +115,13 @@ No notable changes since the last release.
 - A flag before the command name no longer swallows it; `Args` reads only the command's own arguments.
 - Bound the command-name split so `foo:bar:baz` no longer mis-resolves, and bounds-checked `Args`/option value access.
 
-## [0.2.0](https://codeberg.org/celema/console/src/tag/0.2.0) (2026-05-10)
+## [0.2.0](https://codefloe.com/celema/console/src/tag/0.2.0) (2026-05-10)
 
 ### Breaking Changes
 
 - Rename package metadata, root namespace, repository URLs, homepage, and contact email to Celemas.
 
-## [0.1.2](https://codeberg.org/celema/console/src/tag/0.1.2) (2026-04-29)
+## [0.1.2](https://codefloe.com/celema/console/src/tag/0.1.2) (2026-04-29)
 
 ### Breaking
 
@@ -140,7 +140,7 @@ No notable changes since the last release.
 - Fixed package homepage metadata to point to `duon.sh/cli`.
 - Fixed command metadata handling so `0` prefixes, groups, and descriptions are not treated as missing.
 
-## [0.1.1](https://codeberg.org/celema/console/src/tag/0.1.1) (2026-01-29)
+## [0.1.1](https://codefloe.com/celema/console/src/tag/0.1.1) (2026-01-29)
 
 ### Changed
 
@@ -148,7 +148,7 @@ No notable changes since the last release.
 - Breaking: Removed the `composer github` script; CI now runs the equivalent commands directly.
 - Switched development tool dependencies to `duon/dev` and relaxed Composer stability (`minimum-stability: dev` with `prefer-stable`) to allow installing newer Psalm builds.
 
-## [0.1.0](https://codeberg.org/celema/console/src/tag/0.1.0) (2026-01-28)
+## [0.1.0](https://codefloe.com/celema/console/src/tag/0.1.0) (2026-01-28)
 
 Initial version.
 
