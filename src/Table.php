@@ -70,7 +70,7 @@ final class Table
 			}
 		}
 
-		$total = (int) array_sum($widths) + (2 * max(0, count($widths) - 1));
+		$total = array_sum($widths) + (2 * max(0, count($widths) - 1));
 		$out = '';
 
 		foreach ($this->rows as $row) {
