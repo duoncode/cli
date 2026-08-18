@@ -26,3 +26,5 @@ kan-defect = { enabled = false }
 prefer-early-continue = { enabled = false }
 no-boolean-flag-parameter = { enabled = false }
 too-many-methods = { enabled = false }
+no-else-clause = { enabled = false }
+literal-named-argument = { enabled = false }
