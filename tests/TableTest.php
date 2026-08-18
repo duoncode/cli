@@ -19,7 +19,7 @@ class TableTest extends TestCase
 		$table->row(['PHP', '11']);
 
 		$this->assertSame(
-			"Language  Files\n" . "───────────────\n" . "PHP          11\n",
+			"Language  Files\n───────────────\nPHP          11\n",
 			$table->render(),
 		);
 	}
