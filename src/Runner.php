@@ -275,8 +275,8 @@ final class Runner
 
 		if (
 			!$return instanceof ReflectionNamedType
-			|| $return->getName() !== 'int'
-			|| $return->allowsNull()
+				|| $return->getName() !== 'int'
+				|| $return->allowsNull()
 		) {
 			throw new ValueError("Command '{$full}' must declare the return type int");
 		}
@@ -348,7 +348,8 @@ final class Runner
 		foreach ($opts as $opt) {
 			if (
 				array_key_exists($opt->long, $declared)
-				|| $opt->short !== '' && array_key_exists($opt->short, $declared)
+					|| $opt->short !== ''
+					&& array_key_exists($opt->short, $declared)
 			) {
 				$name = array_key_exists($opt->long, $declared) ? $opt->long : $opt->short;
 
@@ -405,7 +406,7 @@ final class Runner
 			if ($arg->variadic && $index < $last) {
 				throw new ValueError(
 					"Command '{$entry->meta->full()}' declares an argument "
-					. "after the variadic '<{$arg->name}>'",
+						. "after the variadic '<{$arg->name}>'",
 				);
 			}
 
@@ -417,7 +418,7 @@ final class Runner
 			if ($index > $required) {
 				throw new ValueError(
 					"Command '{$entry->meta->full()}' declares the required argument "
-					. "'<{$arg->name}>' after an optional one",
+						. "'<{$arg->name}>' after an optional one",
 				);
 			}
 

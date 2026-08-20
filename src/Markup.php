@@ -162,9 +162,7 @@ final class Markup
 		$bg = str_starts_with($name, 'bg-');
 		$hex = substr($name, offset: $bg ? 4 : 1);
 
-		return (
-			($bg ? '48' : '38') . ';2;' . implode(';', array_map(hexdec(...), str_split($hex, length: 2)))
-		);
+		return ($bg ? '48' : '38') . ';2;' . implode(';', array_map(hexdec(...), str_split($hex, length: 2)));
 	}
 
 	/**
